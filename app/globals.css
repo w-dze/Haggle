@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+/*
+ * Accessibility baseline (NFR-3):
+ * - large base type on the call screen
+ * - high contrast
+ * - approval buttons >= 56px tall (see .btn-approve)
+ */
+
+:root {
+  --background: #0b0f17;
+  --foreground: #f5f7fa;
+  --muted: #8a93a6;
+  --accent: #4ade80;
+  --danger: #f87171;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-danger: var(--danger);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-noto), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Call-screen subtitles should be large and readable. */
+.subtitle-line {
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+
+/* Approval buttons: large tap targets for the user path. */
+.btn-approve,
+.btn-reject {
+  min-height: 56px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0 1.5rem;
+}

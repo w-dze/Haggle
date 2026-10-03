@@ -1,0 +1,43 @@
+{
+  "name": "haggle",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Speak to it in your language. It negotiates in English on your behalf.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "seed": "tsx scripts/seed-nessie.ts",
+    "purge": "tsx scripts/purge.ts",
+    "eval": "tsx scripts/eval.ts"
+  },
+  "dependencies": {
+    "@google/genai": "^1.0.0",
+    "@neondatabase/serverless": "^0.10.4",
+    "drizzle-orm": "^0.38.3",
+    "next": "^15.1.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "dotenv": "^16.4.7",
+    "drizzle-kit": "^0.30.1",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
