@@ -1,4 +1,5 @@
-import "dotenv/config";
+import { config } from "dotenv";
+config({ path: [".env.local", ".env"] });
 import { nessieClient } from "../lib/nessie/client";
 
 // Seeds 3 demo customers (one per language persona), each with a checking
