@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
+    "db:push": "drizzle-kit push --force",
     "seed": "tsx scripts/seed-nessie.ts",
     "purge": "tsx scripts/purge.ts",
     "eval": "tsx scripts/eval.ts"

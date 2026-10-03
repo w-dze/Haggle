@@ -1,7 +1,11 @@
 import { NextRequest } from "next/server";
-import { ok, failMsg } from "@/lib/response";
+import { ok, failMsg, failGemini } from "@/lib/response";
 import { extractBill } from "@/lib/gemini/ocr";
 import { last4 } from "@/lib/guardrails/mask";
+import { getDb } from "@/lib/db/client";
+import { bills } from "@/lib/db/schema";
+import { writeAudit } from "@/lib/audit";
+import { asDateOnly, dollarsToCents } from "@/lib/money";
 
 export const runtime = "nodejs";
 
@@ -23,9 +27,31 @@ export async function POST(req: NextRequest) {
       extraction.account_last4 = last4(extraction.account_last4);
     }
 
-    // TODO(B): insert into bills (masked), writeAudit, return the real bill_id.
-    return ok({ bill_id: "TODO", extraction });
+    const db = getDb();
+    const [row] = await db
+      .insert(bills)
+      .values({
+        source: "photo",
+        provider: extraction.provider,
+        planName: extraction.plan_name ?? null,
+        amountCents: dollarsToCents(extraction.total_monthly),
+        currency: "USD",
+        lineItems: extraction.line_items,
+        promoEnd: asDateOnly(extraction.promo_end),
+        accountLast4: extraction.account_last4 ?? null,
+        rawOcr: extraction,
+        imagePath: null,
+      })
+      .returning({ id: bills.id });
+
+    await writeAudit({
+      actor: "intake",
+      event: "bill.extracted",
+      payload: { bill_id: row.id, provider: extraction.provider },
+    });
+
+    return ok({ bill_id: row.id, extraction });
   } catch (err) {
-    return failMsg("ocr_failed", String(err), 500);
+    return failGemini(err, "ocr_failed");
   }
 }

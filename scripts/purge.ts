@@ -1,4 +1,5 @@
-import "dotenv/config";
+import { config } from "dotenv";
+config({ path: [".env.local", ".env"] });
 import { rm, readdir } from "node:fs/promises";
 import { join } from "node:path";
 

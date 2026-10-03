@@ -1,45 +1,49 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { ok, failMsg } from "@/lib/response";
-import { callAllowlist } from "@/lib/env";
-import { placeOutboundCall } from "@/lib/elevenlabs/calls";
+import { getDb } from "@/lib/db/client";
+import { calls, caseFiles } from "@/lib/db/schema";
+import { writeAudit } from "@/lib/audit";
+import { loadStoredCase } from "@/lib/case-files";
+import { eq } from "drizzle-orm";
 
 export const runtime = "nodejs";
 
-// POST /api/calls — place the outbound negotiation call (FR-12).
-// Guardrails: destination allowlist (§7.3), one active call per user, and the
-// case file's limit must be locked before dialing.
+// POST /api/calls — start a simulated negotiation (Twilio is blocked).
 const Body = z.object({
-  case_file_id: z.string(),
-  to_number: z.string(),
+  case_file_id: z.string().uuid(),
+  lang: z.string(),
 });
 
 export async function POST(req: NextRequest) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return failMsg("bad_request", parsed.error.message, 400);
 
-  const { to_number, case_file_id } = parsed.data;
-
-  // §7.3 DoS/cost control: only call allowlisted numbers in the prototype.
-  const allow = callAllowlist();
-  if (allow.length && !allow.includes(to_number)) {
-    return failMsg("not_allowlisted", "Destination number is not on the allowlist", 403);
-  }
-
   try {
-    // TODO(A/B): load locked case file, reject if a live call already exists,
-    // flatten the case file to dynamic variables (§5.4), insert calls row,
-    // writeAudit(call.requested).
-    const dynamicVariables: Record<string, string> = {
-      call_id: "TODO",
-      // holder_name, provider, service, account_last4, current_monthly,
-      // target_monthly, walkaway_monthly, issues, leverage, competitor_offers,
-      // allowed_concessions, forbidden — see §5.4.
-    };
+    const stored = await loadStoredCase(parsed.data.case_file_id);
+    if (!stored) return failMsg("not_found", "Case file not found", 404);
 
-    const result = await placeOutboundCall({ toNumber: to_number, dynamicVariables });
-    // TODO(A): persist conversation_id / call_sid, writeAudit(call.started).
-    return ok({ call_id: "TODO", conversation_id: result.conversation_id, case_file_id });
+    const db = getDb();
+    const [row] = await db
+      .insert(calls)
+      .values({
+        caseFileId: stored.id,
+        toNumber: "simulated",
+        status: "dialing",
+        transcriptSource: "queued",
+      })
+      .returning({ id: calls.id });
+
+    await db.update(caseFiles).set({ status: "locked" }).where(eq(caseFiles.id, stored.id));
+    await writeAudit({
+      actor: "user",
+      event: "call.requested",
+      callId: row.id,
+      caseFileId: stored.id,
+      payload: { mode: "simulated", lang: parsed.data.lang },
+    });
+
+    return ok({ call_id: row.id, case_file_id: stored.id, mode: "simulated" });
   } catch (err) {
     return failMsg("call_failed", String(err), 500);
   }

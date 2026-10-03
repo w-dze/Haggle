@@ -1,4 +1,5 @@
-import "dotenv/config";
+import { config } from "dotenv";
+config({ path: [".env.local", ".env"] });
 
 // Evaluation harness (Stretch X2, §9.2–§9.3). Runs the negotiator against
 // scripted rep personas and reports savings rate, agreement rate, guardrail

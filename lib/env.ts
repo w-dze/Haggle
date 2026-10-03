@@ -6,11 +6,19 @@ import { z } from "zod";
 // paths that genuinely need a key so failures are explicit and localized.
 const EnvSchema = z.object({
   GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL_FAST: z.string().default("gemini-2.0-flash"),
-  GEMINI_MODEL_SMART: z.string().default("gemini-2.0-flash"),
+  // flash-latest aliases to 3.8-flash, which 503s under load. Lite has its own quota.
+  GEMINI_MODEL_FAST: z.string().default("gemini-flash-lite-latest"),
+  GEMINI_MODEL_SMART: z.string().default("gemini-flash-lite-latest"),
+  GEMINI_MODEL_FALLBACKS: z
+    .string()
+    .default("gemini-3.5-flash-lite,gemini-3-flash-preview,gemini-flash-latest"),
 
   NESSIE_API_KEY: z.string().optional(),
-  NESSIE_BASE_URL: z.string().default("http://api.nessieisreal.com"),
+  NESSIE_BASE_URL: z.string().default("https://api.nessieisreal.com"),
+
+  XAI_API_KEY: z.string().optional(),
+  XAI_VOICE_AGENT: z.string().default("eve"),
+  XAI_VOICE_REP: z.string().default("ara"),
 
   ELEVENLABS_API_KEY: z.string().optional(),
   ELEVENLABS_AGENT_ID: z.string().optional(),

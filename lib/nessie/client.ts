@@ -29,4 +29,8 @@ export const nessieClient = {
     nessie(`/customers/${customerId}/accounts`, { method: "POST", body: JSON.stringify(body) }),
   createBill: (accountId: string, body: unknown) =>
     nessie(`/accounts/${accountId}/bills`, { method: "POST", body: JSON.stringify(body) }),
+  createMerchant: (body: unknown) =>
+    nessie(`/merchants`, { method: "POST", body: JSON.stringify(body) }),
+  createPurchase: (accountId: string, body: unknown) =>
+    nessie(`/accounts/${accountId}/purchases`, { method: "POST", body: JSON.stringify(body) }),
 };

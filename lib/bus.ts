@@ -9,7 +9,7 @@
 export type StreamEvent =
   | { type: "status"; status: "dialing" | "live" | "ended" | "failed" | "killed" }
   | { type: "line"; seq: number; speaker: "agent" | "rep"; en: string; tr: string; numbers_ok: boolean }
-  | { type: "approval"; id: string; summary: string; expires_at: string }
+  | { type: "approval"; id: string; summary: string; summary_en?: string; expires_at: string }
   | { type: "approval_resolved"; id: string; status: "yes" | "no" | "timeout" }
   | { type: "outcome"; result: string; old: number; new: number }
   | { type: "debrief"; text: string };
