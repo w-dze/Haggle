@@ -1,7 +1,14 @@
+import { Suspense } from "react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslator, isLocale } from "@/lib/i18n";
+import { PhoneFrame } from "@/components/ui/phone-frame";
 import { BackButton } from "./back-button";
 
+// App shell for every /[lang] screen. Fills its container (the full viewport on
+// phones, a phone-shaped frame on desktop) with the content scrolling inside
+// <main>, so screens can pin their own footers and it renders the same inside
+// the /demo iframe.
 export default async function LangLayout({
   children,
   params,
@@ -14,15 +21,37 @@ export default async function LangLayout({
   const t = getTranslator(lang);
 
   return (
-    <div data-lang={lang} className="min-h-screen">
-      {/* Demo honesty banner (§7.6). Keep this visible for judges. */}
-      <div className="w-full bg-amber-500/10 text-amber-300 text-center text-sm py-1 border-b border-amber-500/20">
-        Demo — mock data
+    <PhoneFrame>
+      <div data-lang={lang} lang={lang} className="flex h-full flex-col bg-background">
+        <header
+          data-app-chrome
+          className="flex-none border-b border-line pt-[env(safe-area-inset-top,0px)]"
+        >
+          <div className="mx-auto flex h-14 w-full max-w-screen-sm items-center justify-between pr-1 pl-2">
+            <div className="w-11">
+              <Suspense fallback={null}>
+                <BackButton label={t("back")} />
+              </Suspense>
+            </div>
+            <Link href={`/${lang}`} className="font-display text-[26px] leading-none">
+              {t("appName")}
+            </Link>
+            <span className="w-[52px] pr-3 text-right text-[11px] font-medium uppercase tracking-[0.14em] text-muted">
+              {lang}
+            </span>
+          </div>
+        </header>
+        {/* Demo honesty banner (§7.6). Keep this visible for judges. */}
+        <p
+          data-app-chrome
+          className="flex h-[27px] flex-none items-center justify-center border-b border-line text-[10px] font-medium uppercase tracking-[0.14em] text-muted"
+        >
+          {t("demo_banner")}
+        </p>
+        <main className="mx-auto flex min-h-0 w-full max-w-screen-sm flex-1 flex-col overflow-y-auto">
+          {children}
+        </main>
       </div>
-      <main className="mx-auto max-w-screen-sm px-4 py-6">
-        <BackButton lang={lang} label={t("back")} />
-        {children}
-      </main>
-    </div>
+    </PhoneFrame>
   );
 }

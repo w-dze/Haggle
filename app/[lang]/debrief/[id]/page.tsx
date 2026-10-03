@@ -12,7 +12,7 @@ export default async function Debrief({
   const t = getTranslator(lang);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 px-4 pt-6 pb-8">
       <h1 className="text-2xl font-bold">{t("debrief_title")}</h1>
 
       <div className="rounded-2xl border border-accent/30 bg-accent/5 p-6 flex flex-col gap-2">

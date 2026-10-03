@@ -11,7 +11,7 @@ export default async function History({
   const t = getTranslator(lang);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 px-4 pt-6 pb-8">
       <h1 className="text-2xl font-bold">{t("history_title")}</h1>
       <p className="text-muted">—</p>
     </div>

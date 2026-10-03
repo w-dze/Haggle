@@ -1,18 +1,23 @@
+import Link from "next/link";
 import { getTranslator } from "@/lib/i18n";
+import { mockHref } from "@/lib/mock-call";
 
 // Screen 3 — explanation + walk-away limit + Start call (§5.8, FR-9..FR-12).
 // TODO(B/C): load the case file by id, render explanation_i18n[lang], the
 // walk-away slider, and allowed-concession checkboxes. "Start call" -> POST /api/calls.
 export default async function CasePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ lang: string; id: string }>;
+  searchParams: Promise<{ mock?: string }>;
 }) {
   const { lang, id } = await params;
+  const mock = (await searchParams).mock === "1";
   const t = getTranslator(lang);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 px-4 pt-6 pb-8">
       <h1 className="text-2xl font-bold">{t("case_title")}</h1>
 
       <div className="grid grid-cols-1 gap-3">
@@ -35,9 +40,17 @@ export default async function CasePage({
       </section>
 
       <p className="text-xs text-muted">{t("case_consent")}</p>
-      <button className="btn-approve bg-accent text-background">
-        {t("case_start_call")}
-      </button>
+      {/* Scripted demo: start the mock call instead of POST /api/calls. */}
+      {mock ? (
+        <Link
+          href={mockHref(`/${lang}/call/${id}`, true)}
+          className="btn-approve flex items-center justify-center bg-accent text-background"
+        >
+          {t("case_start_call")}
+        </Link>
+      ) : (
+        <button className="btn-approve bg-accent text-background">{t("case_start_call")}</button>
+      )}
     </div>
   );
 }
