@@ -1,0 +1,13 @@
+{
+  "_note": "Hand-curated sample data for the hackathon demo. Not live market prices.",
+  "updated": "2026-10-03",
+  "home_internet": [
+    { "provider": "FiberFast",       "plan": "500 Mbps",  "monthly": 50.0, "contract_months": 0,  "notes": "Price lock 12 mo" },
+    { "provider": "FiberFast",       "plan": "1 Gbps",    "monthly": 70.0, "contract_months": 0,  "notes": "" },
+    { "provider": "AirLink 5G Home", "plan": "Unlimited", "monthly": 55.0, "contract_months": 0,  "notes": "$5 off with autopay" },
+    { "provider": "MetroCable",      "plan": "300 Mbps",  "monthly": 45.0, "contract_months": 12, "notes": "Promo, first 12 mo" }
+  ],
+  "mobile": [
+    { "provider": "ValueWireless", "plan": "Unlimited 1 line", "monthly": 30.0, "contract_months": 0, "notes": "" }
+  ]
+}

@@ -1,0 +1,1 @@
+Hi, this is an AI assistant calling on behalf of {{holder_name}}, the account holder, about their {{service}} account ending in {{account_last4}}. This call is being transcribed for them. I'd like to talk about their monthly bill.
