@@ -1,16 +1,65 @@
 import { getTranslator } from "@/lib/i18n";
 import { loadStoredCase } from "@/lib/case-files";
 import { formatMoney } from "@/lib/money";
+import { MOCK_CASE, mockHref } from "@/lib/mock-call";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Caption } from "@/components/ui/caption";
+import { StatCallout } from "@/components/ui/stat-callout";
 import { WalkawaySlider } from "../WalkawaySlider";
 import { StartCallButton } from "../StartCallButton";
 
+function pick(text: { en: string; es: string; zh: string; ko: string }, lang: string) {
+  return text[lang as keyof typeof text] ?? text.en;
+}
+
 export default async function CasePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ lang: string; id: string }>;
+  searchParams: Promise<{ mock?: string }>;
 }) {
   const { lang, id } = await params;
+  const mock = (await searchParams).mock === "1";
   const t = getTranslator(lang);
+
+  if (mock) {
+    return (
+      <div className="flex flex-col gap-6 px-4 pt-6 pb-8">
+        <header className="flex flex-col gap-2">
+          <h1 className="text-3xl">{t("case_title")}</h1>
+          <p className="text-muted">
+            {MOCK_CASE.provider} · {MOCK_CASE.service} · ••••{MOCK_CASE.account_last4}
+          </p>
+        </header>
+
+        <Card as="article">
+          <StatCallout value={`$${MOCK_CASE.current}`} label={t("case_you_pay")} />
+        </Card>
+        <Card as="article">
+          <Caption>{t("case_looks_wrong")}</Caption>
+          <p className="mt-2 leading-relaxed">{pick(MOCK_CASE.issues, lang)}</p>
+        </Card>
+        <Card as="article">
+          <StatCallout value={`$${MOCK_CASE.target}`} label={t("case_good_result")} />
+          <p className="mt-3 text-sm leading-relaxed text-muted">{pick(MOCK_CASE.good, lang)}</p>
+        </Card>
+
+        <section className="flex flex-col gap-2">
+          <label className="font-medium">{t("case_walkaway")}</label>
+          <p className="font-display text-3xl">${MOCK_CASE.walkaway}</p>
+          <input type="range" min={0} max={MOCK_CASE.current} defaultValue={MOCK_CASE.walkaway} className="w-full" />
+        </section>
+
+        <p className="text-xs text-muted">{t("case_consent")}</p>
+        <p className="text-xs text-muted">{t("case_simulated_note")}</p>
+        <Button href={mockHref(`/${lang}/call/${id}`, true)} size="lg">
+          {t("case_start_call")}
+        </Button>
+      </div>
+    );
+  }
 
   let stored: Awaited<ReturnType<typeof loadStoredCase>> = null;
   try {
@@ -21,8 +70,8 @@ export default async function CasePage({
 
   if (!stored) {
     return (
-      <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold">{t("case_title")}</h1>
+      <div className="flex flex-col gap-4 px-4 pt-6 pb-8">
+        <h1 className="text-3xl">{t("case_title")}</h1>
         <p className="text-muted">{t("case_not_found")}</p>
       </div>
     );
@@ -33,41 +82,39 @@ export default async function CasePage({
   const currentDollars = Math.max(Math.round(currentCents / 100), Math.round(walkawayCents / 100));
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold">{t("case_title")}</h1>
-      {caseFile.provider && (
-        <p className="text-muted">
-          {caseFile.provider}
-          {caseFile.service ? ` · ${caseFile.service}` : ""}
-          {caseFile.account_last4 ? ` · ••••${caseFile.account_last4}` : ""}
-        </p>
-      )}
+    <div className="flex flex-col gap-6 px-4 pt-6 pb-8">
+      <header className="flex flex-col gap-2">
+        <h1 className="text-3xl">{t("case_title")}</h1>
+        {caseFile.provider && (
+          <p className="text-muted">
+            {caseFile.provider}
+            {caseFile.service ? ` · ${caseFile.service}` : ""}
+            {caseFile.account_last4 ? ` · ••••${caseFile.account_last4}` : ""}
+          </p>
+        )}
+      </header>
 
-      <div className="grid grid-cols-1 gap-3">
-        <article className="rounded-xl border border-foreground/10 p-4">
-          <h2 className="font-semibold">{t("case_you_pay")}</h2>
-          <p className="text-3xl font-bold mt-2">{formatMoney(currentCents, lang)}</p>
-        </article>
-        <article className="rounded-xl border border-foreground/10 p-4">
-          <h2 className="font-semibold">{t("case_looks_wrong")}</h2>
-          <ul className="mt-2 list-disc pl-5 text-muted space-y-1">
-            {caseFile.issues.length ? (
-              caseFile.issues.map((issue) => <li key={issue}>{issue}</li>)
-            ) : (
-              <li>{explanation || "—"}</li>
-            )}
-          </ul>
-        </article>
-        <article className="rounded-xl border border-foreground/10 p-4">
-          <h2 className="font-semibold">{t("case_good_result")}</h2>
-          <p className="text-2xl font-bold mt-2">{formatMoney(targetCents, lang)}</p>
-          {explanation && <p className="mt-3 text-sm leading-relaxed">{explanation}</p>}
-        </article>
-      </div>
+      <Card as="article">
+        <StatCallout value={formatMoney(currentCents, lang)} label={t("case_you_pay")} />
+      </Card>
+      <Card as="article">
+        <Caption>{t("case_looks_wrong")}</Caption>
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-muted">
+          {caseFile.issues.length ? (
+            caseFile.issues.map((issue) => <li key={issue}>{issue}</li>)
+          ) : (
+            <li>{explanation || "—"}</li>
+          )}
+        </ul>
+      </Card>
+      <Card as="article">
+        <StatCallout value={formatMoney(targetCents, lang)} label={t("case_good_result")} />
+        {explanation && <p className="mt-3 text-sm leading-relaxed text-muted">{explanation}</p>}
+      </Card>
 
       {caseFile.competitor_offers.length > 0 && (
-        <section className="rounded-xl border border-foreground/10 p-4">
-          <h2 className="font-semibold">{t("case_competitors")}</h2>
+        <Card as="section">
+          <Caption>{t("case_competitors")}</Caption>
           <ul className="mt-2 space-y-1 text-sm text-muted">
             {caseFile.competitor_offers.map((o) => (
               <li key={`${o.provider}-${o.plan}`}>
@@ -75,7 +122,7 @@ export default async function CasePage({
               </li>
             ))}
           </ul>
-        </section>
+        </Card>
       )}
 
       <WalkawaySlider

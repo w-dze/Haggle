@@ -1,156 +1,235 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { getTranslator, type Locale } from "@/lib/i18n";
-import { enqueueCallLine, stopCallPlayback, type PlayLine } from "@/lib/call-playback";
+import { useParams, useSearchParams } from "next/navigation";
+import { getTranslator } from "@/lib/i18n";
+import { mockHref } from "@/lib/mock-call";
+import { isTerminal, useCallStream } from "@/components/app/use-call-stream";
+import { ApprovalCard } from "@/components/ui/approval-card";
+import { Button } from "@/components/ui/button";
+import { StatusPill } from "@/components/ui/status-pill";
+import { TranscriptLine } from "@/components/ui/transcript-line";
 
-type StreamEvent =
-  | { type: "status"; status: "dialing" | "live" | "ended" | "failed" | "killed" }
-  | { type: "line"; seq: number; speaker: "agent" | "rep"; en: string; tr: string; numbers_ok: boolean }
-  | { type: "approval"; id: string; summary: string; expires_at: string }
-  | { type: "approval_resolved"; id: string; status: "yes" | "no" | "timeout" }
-  | { type: "outcome"; result: string; old: number; new: number }
-  | { type: "debrief"; text: string };
+// Screen 4 — live call: subtitles, approval card, kill switch (§5.8, FR-19..FR-24).
+// Consumes /api/calls/:id/stream + Grok Voice, or the scripted demo with ?mock=1.
 
-type Line = Extract<StreamEvent, { type: "line" }>;
-type Approval = Extract<StreamEvent, { type: "approval" }>;
+const money = (n: number) => `$${Number.isInteger(n) ? n : n.toFixed(2)}`;
+
+function clock(ms: number) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+}
 
 export default function CallPage() {
   const params = useParams<{ lang: string; id: string }>();
-  const lang = params.lang as Locale;
-  const callId = params.id;
+  const mock = useSearchParams().get("mock") === "1";
+  const { lang, id: callId } = params;
   const t = getTranslator(lang);
-  const router = useRouter();
+  const tEn = getTranslator("en");
 
-  const [status, setStatus] = useState<string>("dialing");
-  const [lines, setLines] = useState<Line[]>([]);
-  const [approval, setApproval] = useState<Approval | null>(null);
-  const [showEnglish, setShowEnglish] = useState(false);
-  const [needsGesture, setNeedsGesture] = useState(false);
-  const [voiceReady, setVoiceReady] = useState(false);
+  const call = useCallStream(callId, lang, mock);
+  const [showEnglish, setShowEnglish] = useState(true);
+  // English UI: the "translation" is the English itself, so show it once.
+  const english = showEnglish && lang !== "en";
+  const ended = isTerminal(call.status);
+  const waiting = call.status === "dialing" && call.items.length === 0;
+
+  // Elapsed timer from the moment the call goes live.
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (call.liveAt === null || call.endedAt !== null) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [call.liveAt, call.endedAt]);
+  const elapsed = call.liveAt === null ? 0 : (call.endedAt ?? now) - call.liveAt;
+
+  // Follow new lines only while the user is at the bottom, so scrolling back
+  // to re-read isn't interrupted. Scrolls the feed element itself (iframe-safe).
   const feedRef = useRef<HTMLDivElement>(null);
-
+  const contentRef = useRef<HTMLDivElement>(null);
+  const stickRef = useRef(true);
   useEffect(() => {
-    fetch(`/api/calls/${callId}/simulate?lang=${lang}`, { method: "POST" }).catch(() => {
-      /* playback is best-effort; SSE still shows persisted lines */
-    });
-    const es = new EventSource(`/api/calls/${callId}/stream`);
-    es.onmessage = (e) => {
-      const evt = JSON.parse(e.data) as StreamEvent;
-      switch (evt.type) {
-        case "status":
-          setStatus(evt.status);
-          break;
-        case "line":
-          enqueueCallLine(callId, evt as PlayLine, {
-            onShow: (line) =>
-              setLines((prev) =>
-                prev.some((x) => x.seq === line.seq) ? prev : [...prev, { type: "line", ...line }],
-              ),
-            onVoiceReady: () => setVoiceReady(true),
-            onNeedsGesture: () => setNeedsGesture(true),
-          });
-          break;
-        case "approval":
-          setApproval(evt);
-          break;
-        case "approval_resolved":
-          setApproval(null);
-          break;
-      }
+    const feed = feedRef.current;
+    const content = contentRef.current;
+    if (!feed || !content) return;
+    const follow = () => {
+      if (stickRef.current) feed.scrollTop = feed.scrollHeight;
     };
-    es.onerror = () => es.close();
-    return () => es.close();
-  }, [callId, lang]);
+    const observer = new ResizeObserver(follow);
+    observer.observe(feed);
+    observer.observe(content);
+    return () => observer.disconnect();
+  }, [waiting]);
 
-  useEffect(() => {
-    feedRef.current?.scrollTo({ top: feedRef.current.scrollHeight });
-  }, [lines]);
-
-  async function answerApproval(decision: "yes" | "no") {
-    if (!approval) return;
-    await fetch(`/api/approvals/${approval.id}`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ decision }),
-    });
-    setApproval(null);
-  }
-
-  async function endCall() {
-    stopCallPlayback(callId);
-    if (status === "dialing" || status === "live") {
-      await fetch(`/api/calls/${callId}/end`, { method: "POST" });
-    }
-    router.push(`/${lang}/debrief/${callId}`);
-  }
-
-  const finished = status === "ended" || status === "killed" || status === "failed";
-
+  const lastLineIndex = call.items.reduce((last, item, i) => (item.kind === "line" ? i : last), -1);
   const statusLabel =
-    status === "live" ? t("call_live") : status === "dialing" ? t("call_dialing") : t("call_ended");
+    call.status === "live"
+      ? t("call_live")
+      : call.status === "dialing"
+        ? t("call_dialing")
+        : t("call_ended");
 
   return (
-    <div className="flex flex-col gap-4 h-[80vh]">
-      <div className="flex items-center justify-between">
-        <span className="rounded-full bg-foreground/10 px-3 py-1 text-sm">
-          {statusLabel} · {t("call_simulated")}
-        </span>
-        <button onClick={() => setShowEnglish((v) => !v)} className="text-sm underline text-muted">
-          {t("call_show_english")}
-        </button>
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex flex-none items-center justify-between px-4 pt-2 pb-1">
+        <div className="flex items-center gap-2.5">
+          <StatusPill status={call.status} label={statusLabel} />
+          <span className="text-sm text-muted tabular-nums">{clock(elapsed)}</span>
+          {!call.connected && !ended && (
+            <span className="text-xs text-muted">{t("call_reconnecting")}</span>
+          )}
+        </div>
+        {lang !== "en" && (
+          <button
+            type="button"
+            aria-pressed={!showEnglish}
+            onClick={() => setShowEnglish((v) => !v)}
+            className="h-11 rounded-full border border-line px-3.5 text-xs font-medium hover:bg-foreground/5"
+          >
+            {showEnglish ? t("call_hide_english") : t("call_show_english")}
+          </button>
+        )}
       </div>
-      {needsGesture && (
-        <button
-          type="button"
-          onClick={() => setNeedsGesture(false)}
-          className="btn-approve bg-accent text-background"
-        >
-          {t("call_unmute")}
-        </button>
+
+      {call.needsGesture && (
+        <div className="flex-none px-4 pb-1">
+          <Button size="lg" className="w-full" onClick={call.unmute}>
+            {t("call_unmute")}
+          </Button>
+        </div>
       )}
-      {voiceReady && !needsGesture && <p className="text-xs text-muted">{t("call_voice")}</p>}
+      {call.voiceReady && !call.needsGesture && (
+        <p className="flex-none px-4 pb-1 text-[11px] font-medium uppercase tracking-[0.14em] text-muted">
+          {t("call_voice")}
+        </p>
+      )}
 
-      <div ref={feedRef} className="flex-1 overflow-y-auto flex flex-col gap-3 pr-1">
-        {lines.map((l) => (
-          <div key={l.seq} className="flex flex-col gap-1">
-            <span className="text-xs text-muted">
-              {l.speaker === "agent" ? `🤖 ${t("speaker_agent")}` : `👤 ${t("speaker_rep")}`}
-            </span>
-            <p className={`subtitle-line ${l.numbers_ok ? "" : "text-danger"}`}>
-              {l.numbers_ok ? l.tr : `⚠️ ${l.tr}`}
-            </p>
-            {showEnglish && <p className="text-sm text-muted">{l.en}</p>}
-          </div>
-        ))}
-      </div>
-
-      <button
-        onClick={endCall}
-        className={
-          finished
-            ? "btn-approve bg-accent text-background"
-            : "btn-reject bg-danger/20 text-danger border border-danger/30"
-        }
-      >
-        {finished ? t("call_see_results") : t("call_end")}
-      </button>
-
-      {approval && (
-        <div className="fixed inset-0 bg-black/60 grid place-items-center p-4">
-          <div className="bg-background border border-foreground/20 rounded-2xl p-6 w-full max-w-sm flex flex-col gap-4">
-            <p className="text-lg">{approval.summary}</p>
-            <div className="flex gap-3">
-              <button onClick={() => answerApproval("yes")} className="btn-approve bg-accent text-background flex-1">
-                {t("approval_yes")}
-              </button>
-              <button onClick={() => answerApproval("no")} className="btn-reject bg-danger/20 text-danger flex-1">
-                {t("approval_no")}
-              </button>
+      {waiting ? (
+        <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 px-8 text-center">
+          <div className="relative flex size-44 items-center justify-center">
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full border border-line motion-safe:animate-pulse"
+            />
+            <div className="flex size-[124px] items-center justify-center rounded-full border border-foreground/25">
+              <div className="flex size-[72px] items-center justify-center rounded-full bg-agent">
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" />
+                </svg>
+              </div>
             </div>
           </div>
+          <div>
+            <h1 className="text-4xl leading-[1.1]">{t("call_dialing")}…</h1>
+            <p className="mt-3 text-base leading-[1.4]">{t("call_waiting_hint")}</p>
+            {english && (
+              <p lang="en" className="mt-1.5 text-[13px] leading-[1.35] text-muted">
+                {tEn("call_waiting_hint")}
+              </p>
+            )}
+          </div>
         </div>
+      ) : (
+        <div
+          ref={feedRef}
+          onScroll={(e) => {
+            const el = e.currentTarget;
+            stickRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+          }}
+          aria-live="polite"
+          className="min-h-0 flex-1 overflow-y-auto px-4 pt-2 pb-4 [overflow-anchor:none]"
+        >
+          <div ref={contentRef} className="flex min-h-full flex-col justify-end gap-3">
+            {call.items.map((item, i) =>
+              item.kind === "line" ? (
+                <TranscriptLine
+                  key={`line-${item.line.seq}`}
+                  line={item.line}
+                  lang={lang}
+                  showEnglish={english}
+                  past={i < lastLineIndex}
+                  labels={{
+                    agent: t("speaker_agent"),
+                    rep: t("speaker_rep"),
+                    numberCheck: t("number_check"),
+                  }}
+                />
+              ) : (
+                <p key={`notice-${item.id}`} className="self-center text-xs text-muted">
+                  {t("approval_timeout")}
+                </p>
+              ),
+            )}
+
+            {ended && call.outcome && (
+              <div className="rounded-2xl border border-line bg-surface px-5 pt-5 pb-[22px]">
+                <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted">
+                  {t("call_outcome")}
+                </p>
+                <p className="mt-2.5 flex items-baseline gap-3 font-display leading-none">
+                  <span className="text-4xl text-muted line-through">{money(call.outcome.old)}</span>
+                  <span className="text-2xl text-muted" aria-hidden="true">
+                    →
+                  </span>
+                  <span className="text-[64px]">{money(call.outcome.new)}</span>
+                </p>
+                <p className="mt-2 text-sm text-muted">{t("per_month")}</p>
+              </div>
+            )}
+
+            {(call.status === "failed" || call.status === "killed") && (
+              <p className="self-center text-sm text-muted">
+                {call.status === "failed" ? t("call_failed") : t("call_killed")}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {call.approval && !ended ? (
+        <ApprovalCard
+          key={call.approval.id}
+          summary={call.approval.summary}
+          summaryEn={english ? call.approval.summary_en : undefined}
+          expiresAt={call.approval.expires_at}
+          lang={lang}
+          onDecision={call.answer}
+          labels={{
+            needed: t("approval_needed"),
+            approve: t("approval_yes"),
+            decline: t("approval_no"),
+            secondsLeft: t("approval_seconds_left"),
+            sentYes: t("approval_sent_yes"),
+            sentNo: t("approval_sent_no"),
+            error: t("approval_error"),
+          }}
+        />
+      ) : (
+        <footer className="flex-none border-t border-line bg-background px-4 pt-3 pb-[max(28px,env(safe-area-inset-bottom,0px))]">
+          {ended ? (
+            <Button
+              href={mockHref(`/${lang}/debrief/${callId}`, mock)}
+              size="lg"
+              className="w-full"
+            >
+              {t("call_see_results")}
+            </Button>
+          ) : (
+            <Button size="lg" variant="danger" className="w-full" onClick={call.end}>
+              {t("call_end")}
+            </Button>
+          )}
+        </footer>
       )}
     </div>
   );

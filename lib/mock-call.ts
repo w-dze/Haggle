@@ -92,6 +92,27 @@ const CLOSING: Record<"yes" | "no", Text> = {
 
 export const MOCK_OUTCOME = { result: "accepted", old: 89, new: 70 } as const;
 
+export const MOCK_CASE = {
+  provider: "Northwind",
+  service: "Home internet",
+  account_last4: "4821",
+  current: 89,
+  target: 70,
+  walkaway: 75,
+  issues: {
+    en: "The promotional rate expired and the bill jumped without a clear notice.",
+    es: "La tarifa promocional venció y la factura subió sin un aviso claro.",
+    zh: "促销价到期后账单上涨，且没有清楚通知。",
+    ko: "프로모션 요금이 끝난 뒤 고지 없이 요금이 올랐습니다.",
+  },
+  good: {
+    en: "A competitor offers $65. Getting close to $70 would be a good result.",
+    es: "Un competidor ofrece $65. Acercarse a $70 sería un buen resultado.",
+    zh: "竞争对手报价 $65。谈到 $70 左右就是好结果。",
+    ko: "경쟁사는 $65입니다. $70 전후면 좋은 결과입니다.",
+  },
+} as const;
+
 const APPROVAL_ID = "mock-approval";
 const APPROVAL_WINDOW_MS = 45_000;
 const CONNECT_MS = 2500;

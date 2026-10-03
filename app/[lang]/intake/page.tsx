@@ -1,8 +1,12 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getTranslator, type Locale } from "@/lib/i18n";
+import { mockHref } from "@/lib/mock-call";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { DropZone } from "@/components/ui/drop-zone";
 
 type ApiOk<T> = { ok: true; data: T };
 type ApiErr = { ok: false; error?: { message_i18n?: Record<string, string> } };
@@ -33,6 +37,7 @@ async function postJson<T>(url: string, body: unknown, lang: string, fallback: s
 
 export default function Intake() {
   const params = useParams<{ lang: string }>();
+  const mock = useSearchParams().get("mock") === "1";
   const lang = params.lang as Locale;
   const t = getTranslator(lang);
   const router = useRouter();
@@ -45,6 +50,7 @@ export default function Intake() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (mock) return;
     fetch("/api/demo-accounts")
       .then((r) => r.json())
       .then((json: ApiOk<{ demos: Demo[] }> | ApiErr) => {
@@ -53,7 +59,7 @@ export default function Intake() {
       .catch(() => {
         /* seed not run yet */
       });
-  }, []);
+  }, [mock]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -116,28 +122,21 @@ export default function Intake() {
   }
 
   return (
-    <form className="flex flex-col gap-6" onSubmit={onSubmit}>
-      <h1 className="text-2xl font-bold">{t("intake_title")}</h1>
+    <form className="flex flex-col gap-6 px-4 pt-6 pb-8" onSubmit={onSubmit}>
+      <h1 className="text-3xl">{t("intake_title")}</h1>
 
-      <section className="rounded-xl border border-foreground/10 p-4 flex flex-col gap-3">
+      <Card as="section" className="flex flex-col gap-3">
         <label className="font-medium" htmlFor="bill-photo">
           {t("intake_upload")}
         </label>
-        <label className="h-32 rounded-lg border border-dashed border-foreground/20 grid place-items-center text-muted cursor-pointer hover:bg-foreground/5">
-          <input
-            id="bill-photo"
-            type="file"
-            accept="image/*,application/pdf"
-            capture="environment"
-            className="sr-only"
-            disabled={busy}
-            onChange={(e) => {
-              setFile(e.target.files?.[0] ?? null);
-              setDemoId(null);
-            }}
-          />
-          {file ? file.name : t("intake_choose_file")}
-        </label>
+        <DropZone
+          label={file ? file.name : t("intake_choose_file")}
+          capture="environment"
+          onFile={(next) => {
+            setFile(next);
+            setDemoId(null);
+          }}
+        />
 
         {demos.length > 0 && (
           <div className="flex flex-col gap-2">
@@ -151,10 +150,10 @@ export default function Intake() {
                   setDemoId(d.customer_id);
                   setFile(null);
                 }}
-                className={`text-left rounded-lg border px-3 py-2 text-sm ${
+                className={`rounded-xl border px-3 py-3 text-left text-sm ${
                   demoId === d.customer_id
                     ? "border-accent bg-accent/10"
-                    : "border-foreground/10 hover:bg-foreground/5"
+                    : "border-line hover:bg-foreground/5"
                 }`}
               >
                 {d.name} · {d.payee} · ${d.monthly}/mo
@@ -162,7 +161,7 @@ export default function Intake() {
             ))}
           </div>
         )}
-      </section>
+      </Card>
 
       <section className="flex flex-col gap-2">
         <label className="font-medium" htmlFor="goal">
@@ -170,23 +169,25 @@ export default function Intake() {
         </label>
         <textarea
           id="goal"
-          className="rounded-lg bg-foreground/5 border border-foreground/10 p-3 min-h-24"
+          className="min-h-24 rounded-xl border border-line bg-surface p-3"
           placeholder={t("intake_goal_placeholder")}
           value={goal}
-          disabled={busy}
+          disabled={busy || mock}
           onChange={(e) => setGoal(e.target.value)}
         />
       </section>
 
-      {error && <p className="text-danger text-sm">{error}</p>}
+      {error && <p className="text-sm text-danger">{error}</p>}
 
-      <button
-        type="submit"
-        disabled={busy}
-        className="btn-approve bg-accent text-background disabled:opacity-60"
-      >
-        {busy ? t("intake_analyzing") : t("intake_analyze")}
-      </button>
+      {mock ? (
+        <Button href={mockHref(`/${lang}/case/demo`, true)} size="lg">
+          {t("continue")}
+        </Button>
+      ) : (
+        <Button type="submit" size="lg" disabled={busy}>
+          {busy ? t("intake_analyzing") : t("intake_analyze")}
+        </Button>
+      )}
     </form>
   );
 }

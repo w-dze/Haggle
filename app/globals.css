@@ -1,47 +1,112 @@
 @import "tailwindcss";
 
 /*
+ * Design tokens — Mecha-inspired: sand / steel neutrals, maroon accent,
+ * sky tint for the Haggle agent. Light by default, dark via the OS setting.
+ *
  * Accessibility baseline (NFR-3):
  * - large base type on the call screen
  * - high contrast
- * - approval buttons >= 56px tall (see .btn-approve)
+ * - approval buttons >= 56px tall (see Button size="lg")
  */
 
 :root {
-  --background: #0b0f17;
-  --foreground: #f5f7fa;
-  --muted: #8a93a6;
-  --accent: #4ade80;
-  --danger: #f87171;
+  color-scheme: light dark;
+
+  --background: #f4f3ee;
+  --surface: #ffffff;
+  --foreground: #262933;
+  --muted: #55656c;
+  --line: #00000026;
+  --accent: #911a46;
+  --agent: #c5f0f7;
+  --success: #2f6f4f;
+  --danger: var(--accent);
+  --backdrop: #e9e8e2; /* desktop page behind the phone frame */
+
+  /* Font stacks. Per-language overrides below keep CJK glyphs consistent. */
+  --stack-sans: var(--font-inter-tight), var(--font-noto-sc), var(--font-noto-kr), system-ui,
+    -apple-system, "Segoe UI", sans-serif;
+  --stack-display: var(--font-instrument-serif), Georgia, var(--font-noto-sc),
+    var(--font-noto-kr), serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #15171d;
+    --surface: #1e2128;
+    --foreground: #e9edef;
+    --muted: #a3a3a3;
+    --line: #ffffff26;
+    --accent: #e0628f;
+    --agent: #1f3a40;
+    --success: #6fcf97;
+    --backdrop: #0c0d11;
+  }
+}
+
+/* Instrument Serif has no CJK glyphs, so zh/ko headings use the sans stack,
+   with that language's Noto face first so shared Han characters match. */
+[data-lang="zh"] {
+  --stack-sans: var(--font-inter-tight), var(--font-noto-sc), system-ui, sans-serif;
+  --stack-display: var(--font-inter-tight), var(--font-noto-sc), system-ui, sans-serif;
+}
+[data-lang="ko"] {
+  --stack-sans: var(--font-inter-tight), var(--font-noto-kr), system-ui, sans-serif;
+  --stack-display: var(--font-inter-tight), var(--font-noto-kr), system-ui, sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
+  --color-line: var(--line);
   --color-accent: var(--accent);
+  --color-agent: var(--agent);
+  --color-success: var(--success);
   --color-danger: var(--danger);
+  --color-backdrop: var(--backdrop);
+
+  --font-sans: var(--stack-sans);
+  --font-display: var(--stack-display);
 }
 
 html,
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-noto), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--stack-sans);
 }
 
-/* Call-screen subtitles should be large and readable. */
-.subtitle-line {
-  font-size: 1.25rem;
-  line-height: 1.6;
+/* In a layer so Tailwind utilities (font-sans, tracking-*) can override it. */
+@layer base {
+  h1,
+  h2 {
+    font-family: var(--stack-display);
+    letter-spacing: -0.01em;
+  }
 }
 
-/* Approval buttons: large tap targets for the user path. */
+/* Inside the /demo phone the website header already shows the wordmark and the
+   mock-data notice, so hide the app's own header and strip, and hide
+   scrollbars like a real phone does. */
+[data-embedded] [data-app-chrome] {
+  display: none;
+}
+[data-embedded] * {
+  scrollbar-width: none;
+}
+[data-embedded] *::-webkit-scrollbar {
+  display: none;
+}
+
+/* Legacy tap-target classes; screens move to <Button size="lg">. */
 .btn-approve,
 .btn-reject {
   min-height: 56px;
   font-size: 1.125rem;
   font-weight: 600;
-  border-radius: 0.75rem;
+  border-radius: 9999px;
   padding: 0 1.5rem;
 }

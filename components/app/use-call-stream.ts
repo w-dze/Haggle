@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { StreamEvent } from "@/lib/bus";
+import { enqueueCallLine, stopCallPlayback, type PlayLine } from "@/lib/call-playback";
 import { runMockCall, type MockCallControls } from "@/lib/mock-call";
 
 type Line = Extract<StreamEvent, { type: "line" }>;
@@ -93,20 +94,44 @@ function reducer(state: State, action: Action): State {
 
 /**
  * Live call state, fed either by the real SSE stream or, with `mock`, by the
- * scripted demo call. Both paths go through the same reducer.
+ * scripted demo call. Both paths go through the same reducer. Subtitles appear
+ * when Grok Voice starts the line (or immediately if TTS is unavailable).
  */
 export function useCallStream(callId: string, lang: string, mock: boolean) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const mockRef = useRef<MockCallControls | null>(null);
+  const [voiceReady, setVoiceReady] = useState(false);
+  const [needsGesture, setNeedsGesture] = useState(false);
 
   useEffect(() => {
-    const onEvent = (evt: StreamEvent) => dispatch({ kind: "event", evt, at: Date.now() });
+    const onLine = (evt: Line) => {
+      enqueueCallLine(callId, evt as PlayLine, {
+        onShow: (line) =>
+          dispatch({ kind: "event", evt: { type: "line", ...line }, at: Date.now() }),
+        onVoiceReady: () => setVoiceReady(true),
+        onNeedsGesture: () => setNeedsGesture(true),
+      });
+    };
+    const onEvent = (evt: StreamEvent) => {
+      if (evt.type === "line") {
+        onLine(evt);
+        return;
+      }
+      dispatch({ kind: "event", evt, at: Date.now() });
+    };
 
     if (mock) {
       const controls = runMockCall(lang, onEvent);
       mockRef.current = controls;
-      return () => controls.stop();
+      return () => {
+        controls.stop();
+        stopCallPlayback(callId);
+      };
     }
+
+    fetch(`/api/calls/${callId}/simulate?lang=${lang}`, { method: "POST" }).catch(() => {
+      /* playback is best-effort; SSE still shows persisted lines */
+    });
 
     const es = new EventSource(`/api/calls/${callId}/stream`);
     es.onopen = () => dispatch({ kind: "connection", ok: true });
@@ -120,7 +145,10 @@ export function useCallStream(callId: string, lang: string, mock: boolean) {
     es.onerror = () => {
       if (es.readyState !== EventSource.CLOSED) dispatch({ kind: "connection", ok: false });
     };
-    return () => es.close();
+    return () => {
+      es.close();
+      stopCallPlayback(callId);
+    };
   }, [callId, lang, mock]);
 
   // The countdown is the user's deadline. If it runs out unanswered, close the
@@ -156,9 +184,12 @@ export function useCallStream(callId: string, lang: string, mock: boolean) {
   );
 
   const end = useCallback(async () => {
+    stopCallPlayback(callId);
     if (mock) mockRef.current?.end();
     else await fetch(`/api/calls/${callId}/end`, { method: "POST" });
   }, [mock, callId]);
 
-  return { ...state, answer, end };
+  const unmute = useCallback(() => setNeedsGesture(false), []);
+
+  return { ...state, answer, end, voiceReady, needsGesture, unmute };
 }

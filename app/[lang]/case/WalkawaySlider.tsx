@@ -37,7 +37,7 @@ export function WalkawaySlider({
       <label className="font-medium" htmlFor="walkaway">
         {label}
       </label>
-      <p className="text-lg font-semibold">{formatMoney(dollars * 100, lang)}</p>
+      <p className="font-display text-3xl">{formatMoney(dollars * 100, lang)}</p>
       <input
         id="walkaway"
         type="range"

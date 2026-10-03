@@ -1,40 +1,66 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { mockHref } from "@/lib/mock-call";
 
-function parentPath(pathname: string, lang: string): string {
-  const parts = pathname.split("/").filter(Boolean);
-  const page = parts[1];
-  const id = parts[2];
-  if (page === "intake") return `/${lang}`;
-  if (page === "case") return `/${lang}/intake`;
-  if (page === "call" && id) {
-    try {
-      const caseId = sessionStorage.getItem(`haggle-case-${id}`);
-      if (caseId) return `/${lang}/case/${caseId}`;
-    } catch {
-      /* ignore */
-    }
-    return `/${lang}/intake`;
+// Links to a fixed parent screen rather than calling history.back(): inside an
+// iframe the session history is shared with the parent page, so going "back"
+// could navigate the parent away. Real calls store the case id separately
+// because the call UUID is not the case-file id.
+function parentHref(pathname: string): string | null {
+  const [lang, section, id] = pathname.split("/").filter(Boolean);
+  if (!lang || !section) return null;
+  switch (section) {
+    case "intake":
+      return `/${lang}`;
+    case "case":
+      return `/${lang}/intake`;
+    case "call":
+      if (id) {
+        try {
+          const caseId = sessionStorage.getItem(`haggle-case-${id}`);
+          if (caseId) return `/${lang}/case/${caseId}`;
+        } catch {
+          /* ignore */
+        }
+        return `/${lang}/case/${id}`;
+      }
+      return `/${lang}/intake`;
+    case "debrief":
+      return `/${lang}/history`;
+    case "history":
+      return `/${lang}`;
+    default:
+      return `/${lang}`;
   }
-  if (page === "debrief") return `/${lang}/history`;
-  if (page === "history") return `/${lang}`;
-  return `/${lang}`;
 }
 
-export function BackButton({ lang, label }: { lang: string; label: string }) {
-  const router = useRouter();
+export function BackButton({ label }: { label: string }) {
   const pathname = usePathname();
-
-  if (pathname === `/${lang}`) return null;
+  const mock = useSearchParams().get("mock") === "1";
+  const href = parentHref(pathname);
+  if (!href) return null;
 
   return (
-    <button
-      type="button"
-      onClick={() => router.push(parentPath(pathname, lang))}
-      className="mb-4 inline-flex items-center gap-1 text-sm text-muted hover:text-foreground"
+    <Link
+      href={mockHref(href, mock)}
+      aria-label={label}
+      className="flex size-11 items-center justify-center text-foreground"
     >
-      <span aria-hidden="true">←</span> {label}
-    </button>
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M15 5l-7 7 7 7" />
+      </svg>
+    </Link>
   );
 }

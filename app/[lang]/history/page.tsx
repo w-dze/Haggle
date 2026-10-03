@@ -4,14 +4,36 @@ import { getTranslator } from "@/lib/i18n";
 import { getDb } from "@/lib/db/client";
 import { calls, outcomes } from "@/lib/db/schema";
 import { formatMoney } from "@/lib/money";
+import { MOCK_OUTCOME, mockHref } from "@/lib/mock-call";
+import { Card } from "@/components/ui/card";
 
 export default async function History({
   params,
+  searchParams,
 }: {
   params: Promise<{ lang: string }>;
+  searchParams: Promise<{ mock?: string }>;
 }) {
   const { lang } = await params;
+  const mock = (await searchParams).mock === "1";
   const t = getTranslator(lang);
+
+  if (mock) {
+    const annual = (MOCK_OUTCOME.old - MOCK_OUTCOME.new) * 12;
+    return (
+      <div className="flex flex-col gap-6 px-4 pt-6 pb-8">
+        <h1 className="text-3xl">{t("history_title")}</h1>
+        <Link href={mockHref(`/${lang}/debrief/demo`, true)}>
+          <Card className="hover:bg-foreground/5">
+            <p className="font-medium">{MOCK_OUTCOME.result}</p>
+            <p className="text-sm text-muted">
+              Northwind · ${MOCK_OUTCOME.old} → ${MOCK_OUTCOME.new} · ${annual}/yr
+            </p>
+          </Card>
+        </Link>
+      </div>
+    );
+  }
 
   let rows: { id: string; status: string | null; startedAt: Date | null; savings: number | null; result: string | null }[] =
     [];
@@ -32,23 +54,22 @@ export default async function History({
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold">{t("history_title")}</h1>
+    <div className="flex flex-col gap-6 px-4 pt-6 pb-8">
+      <h1 className="text-3xl">{t("history_title")}</h1>
       {rows.length === 0 ? (
         <p className="text-muted">—</p>
       ) : (
         <ul className="flex flex-col gap-3">
           {rows.map((r) => (
             <li key={r.id}>
-              <Link
-                href={`/${lang}/debrief/${r.id}`}
-                className="block rounded-xl border border-foreground/10 p-4 hover:bg-foreground/5"
-              >
-                <p className="font-medium">{r.result ?? r.status}</p>
-                <p className="text-sm text-muted">
-                  {r.startedAt ? r.startedAt.toLocaleString() : ""}
-                  {r.savings ? ` · ${formatMoney(r.savings, lang)}` : ""}
-                </p>
+              <Link href={`/${lang}/debrief/${r.id}`}>
+                <Card className="hover:bg-foreground/5">
+                  <p className="font-medium">{r.result ?? r.status}</p>
+                  <p className="text-sm text-muted">
+                    {r.startedAt ? r.startedAt.toLocaleString() : ""}
+                    {r.savings ? ` · ${formatMoney(r.savings, lang)}` : ""}
+                  </p>
+                </Card>
               </Link>
             </li>
           ))}
