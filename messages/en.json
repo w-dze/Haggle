@@ -12,6 +12,7 @@
   "intake_analyze": "Analyze my bill",
   "intake_analyzing": "Reading your bill…",
   "intake_error": "Something went wrong. Try again.",
+  "intake_quota": "Gemini's free limit is 5 requests a minute. Wait about a minute, then try again.",
   "intake_need_photo": "Please add a photo of your bill.",
   "intake_need_goal": "Please tell us what you want.",
   "case_title": "Here's what we found",

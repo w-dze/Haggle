@@ -3,8 +3,9 @@ import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { ok, failMsg } from "@/lib/response";
+import { ok, failMsg, failGemini } from "@/lib/response";
 import { buildCaseFile } from "@/lib/gemini/analyst";
+import { inferIntent } from "@/lib/gemini/intake";
 import { BillExtraction, Intent } from "@/lib/schemas";
 import { getDb } from "@/lib/db/client";
 import { bills, caseFiles } from "@/lib/db/schema";
@@ -18,7 +19,8 @@ export const runtime = "nodejs";
 // + explanation in the user's language (FR-9, FR-10).
 const Body = z.object({
   bill_id: z.string().uuid(),
-  intent: Intent,
+  intent: Intent.optional(),
+  goal_text: z.string().min(1).optional(),
   lang: z.string(),
   nessie_customer_id: z.string().optional(),
 });
@@ -69,6 +71,11 @@ export async function POST(req: NextRequest) {
     const [bill] = await db.select().from(bills).where(eq(bills.id, parsed.data.bill_id)).limit(1);
     if (!bill) return failMsg("not_found", "Bill not found", 404);
 
+    const intent =
+      parsed.data.intent ??
+      (parsed.data.goal_text ? inferIntent(parsed.data.goal_text) : null);
+    if (!intent) return failMsg("bad_request", "intent or goal_text is required", 400);
+
     const extraction = extractionFromBill(bill);
     if (!extraction.account_last4) extraction.account_last4 = "0000";
 
@@ -82,7 +89,7 @@ export async function POST(req: NextRequest) {
 
     const result = await buildCaseFile({
       extraction,
-      intent: parsed.data.intent,
+      intent,
       nessie,
       competitorPlans,
       targetLang: parsed.data.lang,
@@ -92,7 +99,7 @@ export async function POST(req: NextRequest) {
       .insert(caseFiles)
       .values({
         billId: bill.id,
-        intent: parsed.data.intent,
+        intent,
         currentCents: dollarsToCents(result.case_file.current_monthly),
         targetCents: dollarsToCents(result.case_file.target_monthly),
         walkawayCents: dollarsToCents(result.case_file.walkaway_monthly),
@@ -121,6 +128,6 @@ export async function POST(req: NextRequest) {
       explanation: result.explanation,
     });
   } catch (err) {
-    return failMsg("analyst_failed", String(err), 500);
+    return failGemini(err, "analyst_failed");
   }
 }

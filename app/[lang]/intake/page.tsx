@@ -7,16 +7,19 @@ import { getTranslator, type Locale } from "@/lib/i18n";
 type ApiOk<T> = { ok: true; data: T };
 type ApiErr = { ok: false; error?: { message_i18n?: Record<string, string> } };
 
-async function postJson<T>(url: string, body: unknown): Promise<T> {
+function apiMessage(json: ApiErr, lang: string, fallback: string): string {
+  const i18n = json.error?.message_i18n;
+  return i18n?.[lang] ?? i18n?.en ?? fallback;
+}
+
+async function postJson<T>(url: string, body: unknown, lang: string, fallback: string): Promise<T> {
   const res = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(body),
   });
   const json = (await res.json()) as ApiOk<T> | ApiErr;
-  if (!json.ok) {
-    throw new Error(json.error?.message_i18n?.en ?? `Request failed (${res.status})`);
-  }
+  if (!json.ok) throw new Error(apiMessage(json, lang, fallback));
   return json.data;
 }
 
@@ -51,20 +54,19 @@ export default function Intake() {
       const ocrRes = await fetch("/api/bills/ocr", { method: "POST", body: form });
       const ocrJson = (await ocrRes.json()) as ApiOk<{ bill_id: string }> | ApiErr;
       if (!ocrJson.ok) {
-        throw new Error(ocrJson.error?.message_i18n?.en ?? t("intake_error"));
+        throw new Error(apiMessage(ocrJson, lang, t("intake_error")));
       }
 
-      const { intent } = await postJson<{ intent: unknown }>("/api/intake", {
-        goal_text: goal.trim(),
+      const created = await postJson<{ case_file_id: string }>(
+        "/api/case-files",
+        {
+          bill_id: ocrJson.data.bill_id,
+          goal_text: goal.trim(),
+          lang,
+        },
         lang,
-        bill_id: ocrJson.data.bill_id,
-      });
-
-      const created = await postJson<{ case_file_id: string }>("/api/case-files", {
-        bill_id: ocrJson.data.bill_id,
-        intent,
-        lang,
-      });
+        t("intake_error"),
+      );
 
       router.push(`/${lang}/case/${created.case_file_id}`);
     } catch (err) {

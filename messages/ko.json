@@ -12,6 +12,7 @@
   "intake_analyze": "청구서 분석하기",
   "intake_analyzing": "청구서를 읽는 중…",
   "intake_error": "문제가 생겼습니다. 다시 시도해 주세요.",
+  "intake_quota": "Gemini 무료 한도는 분당 5회입니다. 약 1분 기다린 뒤 다시 시도해 주세요.",
   "intake_need_photo": "청구서 사진을 추가해 주세요.",
   "intake_need_goal": "원하는 내용을 알려 주세요.",
   "case_title": "이렇게 확인했어요",

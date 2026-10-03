@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { ok, failMsg } from "@/lib/response";
+import { ok, failMsg, failGemini } from "@/lib/response";
 import { extractBill } from "@/lib/gemini/ocr";
 import { last4 } from "@/lib/guardrails/mask";
 import { getDb } from "@/lib/db/client";
@@ -52,6 +52,6 @@ export async function POST(req: NextRequest) {
 
     return ok({ bill_id: row.id, extraction });
   } catch (err) {
-    return failMsg("ocr_failed", String(err), 500);
+    return failGemini(err, "ocr_failed");
   }
 }

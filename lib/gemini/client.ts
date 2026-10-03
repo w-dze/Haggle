@@ -24,20 +24,24 @@ type GenInput = {
   parts: unknown[]; // text and/or inline image parts
 };
 
-function isTransient(err: unknown): boolean {
-  const msg = String(err);
-  return /503|UNAVAILABLE|high demand|RESOURCE_EXHAUSTED|429/.test(msg);
+export function isQuotaError(err: unknown): boolean {
+  return /429|RESOURCE_EXHAUSTED|quota exceeded/i.test(String(err));
 }
 
-async function withRetries<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
+function isOverloaded(err: unknown): boolean {
+  return /503|UNAVAILABLE|high demand/i.test(String(err));
+}
+
+async function withRetries<T>(fn: () => Promise<T>, attempts = 2): Promise<T> {
   let last: unknown;
   for (let i = 0; i < attempts; i++) {
     try {
       return await fn();
     } catch (err) {
       last = err;
-      if (!isTransient(err) || i === attempts - 1) throw err;
-      await new Promise((r) => setTimeout(r, 800 * (i + 1)));
+      // 429 retries eat the free-tier 5/min budget. Only retry overload.
+      if (isQuotaError(err) || !isOverloaded(err) || i === attempts - 1) throw err;
+      await new Promise((r) => setTimeout(r, 1500 * (i + 1)));
     }
   }
   throw last;
@@ -69,9 +73,8 @@ export async function generateJson<S extends z.ZodTypeAny>(
   try {
     return await withRetries(() => run());
   } catch (err) {
-    return withRetries(() =>
-      run(`Your previous output failed validation: ${String(err)}. Return valid JSON only.`),
-    );
+    if (isQuotaError(err) || isOverloaded(err)) throw err;
+    return run(`Your previous output failed validation: ${String(err)}. Return valid JSON only.`);
   }
 }
 

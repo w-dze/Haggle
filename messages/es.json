@@ -12,6 +12,7 @@
   "intake_analyze": "Analizar mi factura",
   "intake_analyzing": "Leyendo tu factura…",
   "intake_error": "Algo salió mal. Inténtalo de nuevo.",
+  "intake_quota": "Gemini tiene un límite gratuito de 5 solicitudes por minuto. Espera un minuto e inténtalo de nuevo.",
   "intake_need_photo": "Agrega una foto de tu factura.",
   "intake_need_goal": "Dinos qué quieres.",
   "case_title": "Esto es lo que encontramos",

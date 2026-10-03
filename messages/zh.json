@@ -12,6 +12,7 @@
   "intake_analyze": "分析我的账单",
   "intake_analyzing": "正在读取账单……",
   "intake_error": "出了点问题，请再试一次。",
+  "intake_quota": "Gemini 免费额度每分钟只有 5 次请求。请等大约一分钟再试。",
   "intake_need_photo": "请先上传账单照片。",
   "intake_need_goal": "请告诉我们你想要什么。",
   "case_title": "我们发现了这些",
