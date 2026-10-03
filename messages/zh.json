@@ -26,5 +26,6 @@
   "approval_no": "拒绝",
   "debrief_title": "结果如何",
   "debrief_savings": "你节省了",
-  "debrief_view_audit": "查看审计记录"
+  "debrief_view_audit": "查看审计记录",
+  "back": "返回"
 }

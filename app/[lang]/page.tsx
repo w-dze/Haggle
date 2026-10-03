@@ -20,7 +20,7 @@ export default async function Landing({
       <section className="flex flex-col gap-3">
         <p className="text-center text-sm text-muted">{t("choose_language")}</p>
         <div className="grid grid-cols-1 gap-3">
-          {(LOCALES.filter((l) => l !== "en") as Locale[]).map((l) => (
+          {(LOCALES as readonly Locale[]).map((l) => (
             <Link
               key={l}
               href={`/${l}/intake`}

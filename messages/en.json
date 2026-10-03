@@ -26,5 +26,6 @@
   "approval_no": "No",
   "debrief_title": "How it went",
   "debrief_savings": "You save",
-  "debrief_view_audit": "View audit trail"
+  "debrief_view_audit": "View audit trail",
+  "back": "Back"
 }
