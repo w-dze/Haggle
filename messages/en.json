@@ -28,6 +28,8 @@
   "case_competitors": "Other plans we compared",
   "case_call_soon": "Calling the provider is coming next",
   "call_simulated": "Simulated",
+  "call_unmute": "Tap to hear Grok Voice",
+  "call_voice": "Speaking with Grok Voice",
   "call_dialing": "Dialing...",
   "call_live": "Live",
   "call_ended": "Ended",

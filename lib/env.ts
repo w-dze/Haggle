@@ -16,6 +16,10 @@ const EnvSchema = z.object({
   NESSIE_API_KEY: z.string().optional(),
   NESSIE_BASE_URL: z.string().default("https://api.nessieisreal.com"),
 
+  XAI_API_KEY: z.string().optional(),
+  XAI_VOICE_AGENT: z.string().default("eve"),
+  XAI_VOICE_REP: z.string().default("ara"),
+
   ELEVENLABS_API_KEY: z.string().optional(),
   ELEVENLABS_AGENT_ID: z.string().optional(),
   ELEVENLABS_PHONE_NUMBER_ID: z.string().optional(),

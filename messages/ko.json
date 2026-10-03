@@ -28,6 +28,8 @@
   "case_competitors": "비교한 다른 요금제",
   "case_call_soon": "통신사 통화는 다음 단계입니다",
   "call_simulated": "시뮬레이션",
+  "call_unmute": "눌러서 Grok Voice 듣기",
+  "call_voice": "Grok Voice로 재생 중",
   "call_dialing": "전화 거는 중...",
   "call_live": "통화 중",
   "call_ended": "종료됨",

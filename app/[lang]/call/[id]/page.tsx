@@ -29,7 +29,52 @@ export default function CallPage() {
   const [lines, setLines] = useState<Line[]>([]);
   const [approval, setApproval] = useState<Approval | null>(null);
   const [showEnglish, setShowEnglish] = useState(false);
+  const [needsGesture, setNeedsGesture] = useState(false);
+  const [voiceReady, setVoiceReady] = useState(false);
   const feedRef = useRef<HTMLDivElement>(null);
+  const spokenRef = useRef<Set<number>>(new Set());
+  const queueRef = useRef<Promise<void>>(Promise.resolve());
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  function enqueueSpeech(line: Line) {
+    if (spokenRef.current.has(line.seq)) return;
+    spokenRef.current.add(line.seq);
+    queueRef.current = queueRef.current.then(async () => {
+      try {
+        const res = await fetch("/api/voice/tts", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ text: line.en, speaker: line.speaker, language: "en" }),
+        });
+        if (!res.ok) return;
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audioRef.current = audio;
+        await new Promise<void>((resolve) => {
+          audio.onended = () => resolve();
+          audio.onerror = () => resolve();
+          audio.play().then(() => setVoiceReady(true)).catch(() => {
+            setNeedsGesture(true);
+            resolve();
+          });
+        });
+        URL.revokeObjectURL(url);
+      } catch {
+        /* voice is best-effort; subtitles still work */
+      }
+    });
+  }
+
+  async function unlockVoice() {
+    setNeedsGesture(false);
+    setVoiceReady(true);
+    try {
+      await audioRef.current?.play();
+    } catch {
+      /* ignore */
+    }
+  }
 
   useEffect(() => {
     fetch(`/api/calls/${callId}/simulate?lang=${lang}`, { method: "POST" }).catch(() => {
@@ -44,6 +89,7 @@ export default function CallPage() {
           break;
         case "line":
           setLines((prev) => (prev.some((x) => x.seq === evt.seq) ? prev : [...prev, evt]));
+          enqueueSpeech(evt);
           break;
         case "approval":
           setApproval(evt);
@@ -58,10 +104,17 @@ export default function CallPage() {
   }, [callId, lang]);
 
   useEffect(() => {
-    if (status === "ended" || status === "killed" || status === "failed") {
-      const tmr = setTimeout(() => router.push(`/${lang}/debrief/${callId}`), 1600);
-      return () => clearTimeout(tmr);
-    }
+    if (status !== "ended" && status !== "killed" && status !== "failed") return;
+    let cancelled = false;
+    Promise.race([
+      queueRef.current,
+      new Promise((r) => setTimeout(r, 12_000)),
+    ]).then(() => {
+      if (!cancelled) router.push(`/${lang}/debrief/${callId}`);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [status, lang, callId, router]);
 
   useEffect(() => {
@@ -95,6 +148,18 @@ export default function CallPage() {
           {t("call_show_english")}
         </button>
       </div>
+      {needsGesture && (
+        <button
+          type="button"
+          onClick={unlockVoice}
+          className="btn-approve bg-accent text-background"
+        >
+          {t("call_unmute")}
+        </button>
+      )}
+      {voiceReady && !needsGesture && (
+        <p className="text-xs text-muted">{t("call_voice")}</p>
+      )}
 
       <div ref={feedRef} className="flex-1 overflow-y-auto flex flex-col gap-3 pr-1">
         {lines.map((l) => (

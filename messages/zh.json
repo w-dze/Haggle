@@ -28,6 +28,8 @@
   "case_competitors": "我们比较过的其他套餐",
   "case_call_soon": "致电服务商功能即将推出",
   "call_simulated": "模拟通话",
+  "call_unmute": "点按收听 Grok Voice",
+  "call_voice": "正在用 Grok Voice 朗读",
   "call_dialing": "正在拨号……",
   "call_live": "通话中",
   "call_ended": "已结束",
