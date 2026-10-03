@@ -41,5 +41,6 @@
   "debrief_savings": "You save",
   "debrief_killed": "Call ended early",
   "debrief_next": "Next steps",
-  "debrief_view_audit": "View audit trail"
+  "debrief_view_audit": "View audit trail",
+  "back": "Back"
 }

@@ -41,5 +41,6 @@
   "debrief_savings": "Ahorras",
   "debrief_killed": "La llamada terminó antes",
   "debrief_next": "Siguientes pasos",
-  "debrief_view_audit": "Ver registro de auditoría"
+  "debrief_view_audit": "Ver registro de auditoría",
+  "back": "Atrás"
 }
