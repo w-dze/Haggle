@@ -3,10 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getTranslator, type Locale } from "@/lib/i18n";
+import {
+  enqueueCallLine,
+  stopCallPlayback,
+  waitForCallPlayback,
+  type PlayLine,
+} from "@/lib/call-playback";
 
-// Screen 4 — live call: subtitles, approval modal, kill switch (§5.8, FR-19..FR-24).
-// Consumes the SSE stream at /api/calls/:id/stream. The event shapes mirror
-// the StreamEvent union in PDR §5.8.
 type StreamEvent =
   | { type: "status"; status: "dialing" | "live" | "ended" | "failed" | "killed" }
   | { type: "line"; seq: number; speaker: "agent" | "rep"; en: string; tr: string; numbers_ok: boolean }
@@ -32,49 +35,6 @@ export default function CallPage() {
   const [needsGesture, setNeedsGesture] = useState(false);
   const [voiceReady, setVoiceReady] = useState(false);
   const feedRef = useRef<HTMLDivElement>(null);
-  const spokenRef = useRef<Set<number>>(new Set());
-  const queueRef = useRef<Promise<void>>(Promise.resolve());
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  function enqueueSpeech(line: Line) {
-    if (spokenRef.current.has(line.seq)) return;
-    spokenRef.current.add(line.seq);
-    queueRef.current = queueRef.current.then(async () => {
-      try {
-        const res = await fetch("/api/voice/tts", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ text: line.en, speaker: line.speaker, language: "en" }),
-        });
-        if (!res.ok) return;
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
-        audioRef.current = audio;
-        await new Promise<void>((resolve) => {
-          audio.onended = () => resolve();
-          audio.onerror = () => resolve();
-          audio.play().then(() => setVoiceReady(true)).catch(() => {
-            setNeedsGesture(true);
-            resolve();
-          });
-        });
-        URL.revokeObjectURL(url);
-      } catch {
-        /* voice is best-effort; subtitles still work */
-      }
-    });
-  }
-
-  async function unlockVoice() {
-    setNeedsGesture(false);
-    setVoiceReady(true);
-    try {
-      await audioRef.current?.play();
-    } catch {
-      /* ignore */
-    }
-  }
 
   useEffect(() => {
     fetch(`/api/calls/${callId}/simulate?lang=${lang}`, { method: "POST" }).catch(() => {
@@ -88,8 +48,14 @@ export default function CallPage() {
           setStatus(evt.status);
           break;
         case "line":
-          setLines((prev) => (prev.some((x) => x.seq === evt.seq) ? prev : [...prev, evt]));
-          enqueueSpeech(evt);
+          enqueueCallLine(callId, evt as PlayLine, {
+            onShow: (line) =>
+              setLines((prev) =>
+                prev.some((x) => x.seq === line.seq) ? prev : [...prev, { type: "line", ...line }],
+              ),
+            onVoiceReady: () => setVoiceReady(true),
+            onNeedsGesture: () => setNeedsGesture(true),
+          });
           break;
         case "approval":
           setApproval(evt);
@@ -106,10 +72,7 @@ export default function CallPage() {
   useEffect(() => {
     if (status !== "ended" && status !== "killed" && status !== "failed") return;
     let cancelled = false;
-    Promise.race([
-      queueRef.current,
-      new Promise((r) => setTimeout(r, 12_000)),
-    ]).then(() => {
+    waitForCallPlayback(callId).then(() => {
       if (!cancelled) router.push(`/${lang}/debrief/${callId}`);
     });
     return () => {
@@ -132,6 +95,7 @@ export default function CallPage() {
   }
 
   async function endCall() {
+    stopCallPlayback(callId);
     await fetch(`/api/calls/${callId}/end`, { method: "POST" });
   }
 
@@ -151,15 +115,13 @@ export default function CallPage() {
       {needsGesture && (
         <button
           type="button"
-          onClick={unlockVoice}
+          onClick={() => setNeedsGesture(false)}
           className="btn-approve bg-accent text-background"
         >
           {t("call_unmute")}
         </button>
       )}
-      {voiceReady && !needsGesture && (
-        <p className="text-xs text-muted">{t("call_voice")}</p>
-      )}
+      {voiceReady && !needsGesture && <p className="text-xs text-muted">{t("call_voice")}</p>}
 
       <div ref={feedRef} className="flex-1 overflow-y-auto flex flex-col gap-3 pr-1">
         {lines.map((l) => (

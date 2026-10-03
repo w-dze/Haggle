@@ -179,7 +179,9 @@ export async function playSimulatedCall(callId: string, lang: string): Promise<v
       numbersOk: true,
       source: "script",
     });
-    await new Promise((r) => setTimeout(r, 1800));
+    // Short gap only — the client holds the next subtitle until this line's
+    // Grok Voice clip finishes, so a long server delay would desync.
+    await new Promise((r) => setTimeout(r, 400));
   }
 
   if (!(await stillActive(callId))) return;
