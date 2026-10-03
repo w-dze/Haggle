@@ -10,7 +10,7 @@ const EnvSchema = z.object({
   GEMINI_MODEL_SMART: z.string().default("gemini-3.8-flash"),
 
   NESSIE_API_KEY: z.string().optional(),
-  NESSIE_BASE_URL: z.string().default("http://api.nessieisreal.com"),
+  NESSIE_BASE_URL: z.string().default("https://api.nessieisreal.com"),
 
   ELEVENLABS_API_KEY: z.string().optional(),
   ELEVENLABS_AGENT_ID: z.string().optional(),
