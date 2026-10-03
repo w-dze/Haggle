@@ -31,6 +31,11 @@ export function StartCallButton({
       if (!json.ok || !json.data?.call_id) {
         throw new Error(json.error?.message_i18n?.[lang] ?? json.error?.message_i18n?.en ?? errorLabel);
       }
+      try {
+        sessionStorage.setItem(`haggle-case-${json.data.call_id}`, caseId);
+      } catch {
+        /* ignore */
+      }
       router.push(`/${lang}/call/${json.data.call_id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : errorLabel);

@@ -3,12 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getTranslator, type Locale } from "@/lib/i18n";
-import {
-  enqueueCallLine,
-  stopCallPlayback,
-  waitForCallPlayback,
-  type PlayLine,
-} from "@/lib/call-playback";
+import { enqueueCallLine, stopCallPlayback, type PlayLine } from "@/lib/call-playback";
 
 type StreamEvent =
   | { type: "status"; status: "dialing" | "live" | "ended" | "failed" | "killed" }
@@ -70,17 +65,6 @@ export default function CallPage() {
   }, [callId, lang]);
 
   useEffect(() => {
-    if (status !== "ended" && status !== "killed" && status !== "failed") return;
-    let cancelled = false;
-    waitForCallPlayback(callId).then(() => {
-      if (!cancelled) router.push(`/${lang}/debrief/${callId}`);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [status, lang, callId, router]);
-
-  useEffect(() => {
     feedRef.current?.scrollTo({ top: feedRef.current.scrollHeight });
   }, [lines]);
 
@@ -96,8 +80,13 @@ export default function CallPage() {
 
   async function endCall() {
     stopCallPlayback(callId);
-    await fetch(`/api/calls/${callId}/end`, { method: "POST" });
+    if (status === "dialing" || status === "live") {
+      await fetch(`/api/calls/${callId}/end`, { method: "POST" });
+    }
+    router.push(`/${lang}/debrief/${callId}`);
   }
+
+  const finished = status === "ended" || status === "killed" || status === "failed";
 
   const statusLabel =
     status === "live" ? t("call_live") : status === "dialing" ? t("call_dialing") : t("call_ended");
@@ -137,8 +126,15 @@ export default function CallPage() {
         ))}
       </div>
 
-      <button onClick={endCall} className="btn-reject bg-danger/20 text-danger border border-danger/30">
-        {t("call_end")}
+      <button
+        onClick={endCall}
+        className={
+          finished
+            ? "btn-approve bg-accent text-background"
+            : "btn-reject bg-danger/20 text-danger border border-danger/30"
+        }
+      >
+        {finished ? t("call_see_results") : t("call_end")}
       </button>
 
       {approval && (
