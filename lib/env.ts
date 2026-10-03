@@ -6,8 +6,8 @@ import { z } from "zod";
 // paths that genuinely need a key so failures are explicit and localized.
 const EnvSchema = z.object({
   GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL_FAST: z.string().default("gemini-3.8-flash"),
-  GEMINI_MODEL_SMART: z.string().default("gemini-3.8-flash"),
+  GEMINI_MODEL_FAST: z.string().default("gemini-flash-latest"),
+  GEMINI_MODEL_SMART: z.string().default("gemini-flash-latest"),
 
   NESSIE_API_KEY: z.string().optional(),
   NESSIE_BASE_URL: z.string().default("https://api.nessieisreal.com"),

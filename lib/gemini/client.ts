@@ -24,6 +24,25 @@ type GenInput = {
   parts: unknown[]; // text and/or inline image parts
 };
 
+function isTransient(err: unknown): boolean {
+  const msg = String(err);
+  return /503|UNAVAILABLE|high demand|RESOURCE_EXHAUSTED|429/.test(msg);
+}
+
+async function withRetries<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
+  let last: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      last = err;
+      if (!isTransient(err) || i === attempts - 1) throw err;
+      await new Promise((r) => setTimeout(r, 800 * (i + 1)));
+    }
+  }
+  throw last;
+}
+
 /**
  * Generates JSON and validates it against `schema`. Retries once on parse
  * failure with the error appended to the prompt (§5.5).
@@ -48,9 +67,11 @@ export async function generateJson<S extends z.ZodTypeAny>(
   };
 
   try {
-    return await run();
+    return await withRetries(() => run());
   } catch (err) {
-    return run(`Your previous output failed validation: ${String(err)}. Return valid JSON only.`);
+    return withRetries(() =>
+      run(`Your previous output failed validation: ${String(err)}. Return valid JSON only.`),
+    );
   }
 }
 
