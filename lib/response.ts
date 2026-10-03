@@ -31,11 +31,21 @@ const QUOTA_I18N = {
   ko: "Gemini 무료 한도는 분당 5회입니다. 약 1분 기다린 뒤 다시 시도해 주세요.",
 };
 
-/** Map Gemini errors to a user-facing envelope. Quota → 429, not a raw stack dump. */
+const BUSY_I18N = {
+  en: "Gemini is busy right now. Wait 15 seconds and try once more.",
+  es: "Gemini está ocupado ahora. Espera 15 segundos e inténtalo una vez más.",
+  zh: "Gemini 现在很忙。请等 15 秒再试一次。",
+  ko: "Gemini가 지금 혼잡합니다. 15초 기다린 뒤 한 번만 다시 시도해 주세요.",
+};
+
+/** Map Gemini errors to a user-facing envelope. Quota/overload → not a raw stack dump. */
 export function failGemini(err: unknown, fallbackCode: string) {
   const msg = String(err);
   if (/429|RESOURCE_EXHAUSTED|quota exceeded/i.test(msg)) {
     return fail("gemini_quota", QUOTA_I18N, 429);
+  }
+  if (/503|UNAVAILABLE|high demand/i.test(msg)) {
+    return fail("gemini_busy", BUSY_I18N, 503);
   }
   return failMsg(fallbackCode, msg, 500);
 }
