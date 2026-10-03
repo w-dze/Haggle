@@ -20,6 +20,7 @@
   "case_looks_wrong": "What looks wrong",
   "case_good_result": "What a good result looks like",
   "case_walkaway": "Your limit (we won't agree to more without asking you)",
+  "case_walkaway_saved": "Saved. We won't agree to more than this without asking you.",
   "case_consent": "Haggle will call the provider as an AI assistant on your behalf.",
   "case_start_call": "Start call",
   "case_not_found": "We couldn't find this case file.",

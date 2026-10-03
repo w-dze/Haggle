@@ -1,6 +1,7 @@
 import { getTranslator } from "@/lib/i18n";
 import { loadStoredCase } from "@/lib/case-files";
 import { formatMoney } from "@/lib/money";
+import { WalkawaySlider } from "../WalkawaySlider";
 
 export default async function CasePage({
   params,
@@ -28,8 +29,7 @@ export default async function CasePage({
 
   const { caseFile, explanationI18n, walkawayCents, currentCents, targetCents } = stored;
   const explanation = explanationI18n[lang] ?? explanationI18n.en ?? "";
-  const walkawayDollars = Math.round(walkawayCents / 100);
-  const currentDollars = Math.max(Math.round(currentCents / 100), walkawayDollars);
+  const currentDollars = Math.max(Math.round(currentCents / 100), Math.round(walkawayCents / 100));
 
   return (
     <div className="flex flex-col gap-6">
@@ -77,21 +77,14 @@ export default async function CasePage({
         </section>
       )}
 
-      <section className="flex flex-col gap-2">
-        <label className="font-medium" htmlFor="walkaway">
-          {t("case_walkaway")}
-        </label>
-        <p className="text-lg font-semibold">{formatMoney(walkawayCents, lang)}</p>
-        <input
-          id="walkaway"
-          type="range"
-          min={0}
-          max={Math.max(currentDollars, 1)}
-          defaultValue={walkawayDollars}
-          className="w-full"
-          disabled
-        />
-      </section>
+      <WalkawaySlider
+        caseId={id}
+        lang={lang}
+        initialCents={walkawayCents}
+        maxDollars={currentDollars}
+        label={t("case_walkaway")}
+        savedLabel={t("case_walkaway_saved")}
+      />
 
       <p className="text-xs text-muted">{t("case_consent")}</p>
       <button disabled className="btn-approve bg-accent/50 text-background cursor-not-allowed">

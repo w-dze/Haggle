@@ -1,11 +1,19 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getTranslator, type Locale } from "@/lib/i18n";
 
 type ApiOk<T> = { ok: true; data: T };
 type ApiErr = { ok: false; error?: { message_i18n?: Record<string, string> } };
+
+type Demo = {
+  lang: string;
+  name: string;
+  customer_id: string;
+  payee: string;
+  monthly: number;
+};
 
 function apiMessage(json: ApiErr, lang: string, fallback: string): string {
   const i18n = json.error?.message_i18n;
@@ -30,14 +38,27 @@ export default function Intake() {
   const router = useRouter();
 
   const [file, setFile] = useState<File | null>(null);
+  const [demos, setDemos] = useState<Demo[]>([]);
+  const [demoId, setDemoId] = useState<string | null>(null);
   const [goal, setGoal] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    fetch("/api/demo-accounts")
+      .then((r) => r.json())
+      .then((json: ApiOk<{ demos: Demo[] }> | ApiErr) => {
+        if (json.ok) setDemos(json.data.demos);
+      })
+      .catch(() => {
+        /* seed not run yet */
+      });
+  }, []);
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    if (!file) {
+    if (!file && !demoId) {
       setError(t("intake_need_photo"));
       return;
     }
@@ -48,21 +69,40 @@ export default function Intake() {
 
     setBusy(true);
     try {
-      const form = new FormData();
-      form.append("image", file);
-      form.append("lang", lang);
-      const ocrRes = await fetch("/api/bills/ocr", { method: "POST", body: form });
-      const ocrJson = (await ocrRes.json()) as ApiOk<{ bill_id: string }> | ApiErr;
-      if (!ocrJson.ok) {
-        throw new Error(apiMessage(ocrJson, lang, t("intake_error")));
+      let billId: string;
+      let nessieCustomerId: string | undefined;
+      let preferLocal = false;
+
+      if (demoId) {
+        const imported = await postJson<{ bill_id: string; nessie_customer_id: string }>(
+          "/api/bills/from-nessie",
+          { customer_id: demoId },
+          lang,
+          t("intake_error"),
+        );
+        billId = imported.bill_id;
+        nessieCustomerId = imported.nessie_customer_id;
+        preferLocal = true;
+      } else if (file) {
+        const form = new FormData();
+        form.append("image", file);
+        form.append("lang", lang);
+        const ocrRes = await fetch("/api/bills/ocr", { method: "POST", body: form });
+        const ocrJson = (await ocrRes.json()) as ApiOk<{ bill_id: string }> | ApiErr;
+        if (!ocrJson.ok) throw new Error(apiMessage(ocrJson, lang, t("intake_error")));
+        billId = ocrJson.data.bill_id;
+      } else {
+        throw new Error(t("intake_need_photo"));
       }
 
       const created = await postJson<{ case_file_id: string }>(
         "/api/case-files",
         {
-          bill_id: ocrJson.data.bill_id,
+          bill_id: billId,
           goal_text: goal.trim(),
           lang,
+          nessie_customer_id: nessieCustomerId,
+          prefer_local: preferLocal,
         },
         lang,
         t("intake_error"),
@@ -91,10 +131,37 @@ export default function Intake() {
             capture="environment"
             className="sr-only"
             disabled={busy}
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            onChange={(e) => {
+              setFile(e.target.files?.[0] ?? null);
+              setDemoId(null);
+            }}
           />
           {file ? file.name : t("intake_choose_file")}
         </label>
+
+        {demos.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-muted">{t("intake_use_demo")}</p>
+            {demos.map((d) => (
+              <button
+                key={d.customer_id}
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  setDemoId(d.customer_id);
+                  setFile(null);
+                }}
+                className={`text-left rounded-lg border px-3 py-2 text-sm ${
+                  demoId === d.customer_id
+                    ? "border-accent bg-accent/10"
+                    : "border-foreground/10 hover:bg-foreground/5"
+                }`}
+              >
+                {d.name} · {d.payee} · ${d.monthly}/mo
+              </button>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="flex flex-col gap-2">

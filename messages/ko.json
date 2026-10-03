@@ -20,6 +20,7 @@
   "case_looks_wrong": "이상해 보이는 점",
   "case_good_result": "좋은 결과는 이런 모습이에요",
   "case_walkaway": "당신의 한도 (동의 없이는 더 높은 금액에 합의하지 않습니다)",
+  "case_walkaway_saved": "저장됨. 동의 없이는 이보다 높은 금액에 합의하지 않습니다.",
   "case_consent": "Haggle이 AI 어시스턴트로서 당신을 대신해 통신사에 전화합니다.",
   "case_start_call": "통화 시작",
   "case_not_found": "이 사례를 찾을 수 없습니다.",

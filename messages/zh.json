@@ -20,6 +20,7 @@
   "case_looks_wrong": "看起来有问题的地方",
   "case_good_result": "好的结果是什么样",
   "case_walkaway": "你的底线（不经你同意我们不会接受更高的价格）",
+  "case_walkaway_saved": "已保存。未经你同意，我们不会接受更高的价格。",
   "case_consent": "Haggle 将以 AI 助手的身份代表你致电服务商。",
   "case_start_call": "开始通话",
   "case_not_found": "找不到这份案件。",

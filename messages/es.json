@@ -20,6 +20,7 @@
   "case_looks_wrong": "Lo que parece mal",
   "case_good_result": "Cómo sería un buen resultado",
   "case_walkaway": "Tu límite (no aceptaremos más sin preguntarte)",
+  "case_walkaway_saved": "Guardado. No aceptaremos más que esto sin preguntarte.",
   "case_consent": "Haggle llamará al proveedor como asistente de IA en tu nombre.",
   "case_start_call": "Iniciar llamada",
   "case_not_found": "No encontramos este caso.",

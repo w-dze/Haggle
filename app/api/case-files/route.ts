@@ -6,6 +6,9 @@ import { join } from "node:path";
 import { ok, failMsg, failGemini } from "@/lib/response";
 import { buildCaseFile } from "@/lib/gemini/analyst";
 import { inferIntent } from "@/lib/gemini/intake";
+import { buildLocalCaseFile } from "@/lib/case-file-local";
+import { isOverloaded, isQuotaError } from "@/lib/gemini/client";
+import type { NessieCustomer, NessiePurchase } from "@/lib/nessie/types";
 import { BillExtraction, Intent } from "@/lib/schemas";
 import { getDb } from "@/lib/db/client";
 import { bills, caseFiles } from "@/lib/db/schema";
@@ -23,6 +26,7 @@ const Body = z.object({
   goal_text: z.string().min(1).optional(),
   lang: z.string(),
   nessie_customer_id: z.string().optional(),
+  prefer_local: z.boolean().optional(),
 });
 
 function extractionFromBill(row: typeof bills.$inferSelect): BillExtraction {
@@ -87,13 +91,40 @@ export async function POST(req: NextRequest) {
       ? await loadNessie(parsed.data.nessie_customer_id)
       : undefined;
 
-    const result = await buildCaseFile({
-      extraction,
-      intent,
-      nessie,
-      competitorPlans,
-      targetLang: parsed.data.lang,
-    });
+    const nessieHolder =
+      nessie && typeof nessie === "object" && "customer" in nessie
+        ? `${(nessie.customer as NessieCustomer).first_name} ${(nessie.customer as NessieCustomer).last_name}`
+        : undefined;
+    const onTimeMonths =
+      nessie && typeof nessie === "object" && "purchases" in nessie
+        ? ((nessie.purchases as NessiePurchase[]) ?? []).filter((p) => p.status === "completed").length
+        : 0;
+
+    const local = () =>
+      buildLocalCaseFile({
+        extraction,
+        intent,
+        holderName: nessieHolder,
+        onTimeMonths,
+        competitorPlans,
+        targetLang: parsed.data.lang,
+      });
+
+    let result = local();
+    if (!parsed.data.prefer_local) {
+      try {
+        result = await buildCaseFile({
+          extraction,
+          intent,
+          nessie,
+          competitorPlans,
+          targetLang: parsed.data.lang,
+        });
+      } catch (err) {
+        if (!isQuotaError(err) && !isOverloaded(err)) throw err;
+        result = local();
+      }
+    }
 
     const [row] = await db
       .insert(caseFiles)

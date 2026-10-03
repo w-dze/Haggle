@@ -40,7 +40,13 @@ function modelCandidates(preferred?: string): string[] {
   const extras = env.GEMINI_MODEL_FALLBACKS.split(",")
     .map((s) => s.trim())
     .filter(Boolean);
-  return [...new Set([preferred, env.GEMINI_MODEL_FAST, env.GEMINI_MODEL_SMART, ...extras].filter(Boolean))];
+  return [
+    ...new Set(
+      [preferred, env.GEMINI_MODEL_FAST, env.GEMINI_MODEL_SMART, ...extras].filter(
+        (m): m is string => Boolean(m),
+      ),
+    ),
+  ];
 }
 
 async function withModelFallback<T>(
