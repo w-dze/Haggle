@@ -23,9 +23,11 @@
   "case_walkaway_saved": "已保存。未经你同意，我们不会接受更高的价格。",
   "case_consent": "Haggle 将以 AI 助手的身份代表你致电服务商。",
   "case_start_call": "开始通话",
+  "case_simulated_note": "演示：会播放一段带字幕的英文通话脚本，不会真正拨号。",
   "case_not_found": "找不到这份案件。",
   "case_competitors": "我们比较过的其他套餐",
   "case_call_soon": "致电服务商功能即将推出",
+  "call_simulated": "模拟通话",
   "call_dialing": "正在拨号……",
   "call_live": "通话中",
   "call_ended": "已结束",
@@ -37,5 +39,7 @@
   "approval_no": "拒绝",
   "debrief_title": "结果如何",
   "debrief_savings": "你节省了",
+  "debrief_killed": "通话提前结束",
+  "debrief_next": "下一步",
   "debrief_view_audit": "查看审计记录"
 }

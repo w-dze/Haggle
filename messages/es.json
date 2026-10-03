@@ -23,9 +23,11 @@
   "case_walkaway_saved": "Guardado. No aceptaremos más que esto sin preguntarte.",
   "case_consent": "Haggle llamará al proveedor como asistente de IA en tu nombre.",
   "case_start_call": "Iniciar llamada",
+  "case_simulated_note": "Demo: se reproduce una llamada en inglés con subtítulos. No hay una llamada real.",
   "case_not_found": "No encontramos este caso.",
   "case_competitors": "Otros planes que comparamos",
   "case_call_soon": "La llamada al proveedor viene después",
+  "call_simulated": "Simulada",
   "call_dialing": "Llamando...",
   "call_live": "En vivo",
   "call_ended": "Finalizada",
@@ -37,5 +39,7 @@
   "approval_no": "No",
   "debrief_title": "Cómo fue",
   "debrief_savings": "Ahorras",
+  "debrief_killed": "La llamada terminó antes",
+  "debrief_next": "Siguientes pasos",
   "debrief_view_audit": "Ver registro de auditoría"
 }

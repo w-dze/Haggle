@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { getTranslator, type Locale } from "@/lib/i18n";
 
 // Screen 4 — live call: subtitles, approval modal, kill switch (§5.8, FR-19..FR-24).
@@ -23,6 +23,7 @@ export default function CallPage() {
   const lang = params.lang as Locale;
   const callId = params.id;
   const t = getTranslator(lang);
+  const router = useRouter();
 
   const [status, setStatus] = useState<string>("dialing");
   const [lines, setLines] = useState<Line[]>([]);
@@ -31,6 +32,9 @@ export default function CallPage() {
   const feedRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    fetch(`/api/calls/${callId}/simulate?lang=${lang}`, { method: "POST" }).catch(() => {
+      /* playback is best-effort; SSE still shows persisted lines */
+    });
     const es = new EventSource(`/api/calls/${callId}/stream`);
     es.onmessage = (e) => {
       const evt = JSON.parse(e.data) as StreamEvent;
@@ -39,7 +43,7 @@ export default function CallPage() {
           setStatus(evt.status);
           break;
         case "line":
-          setLines((prev) => [...prev, evt]);
+          setLines((prev) => (prev.some((x) => x.seq === evt.seq) ? prev : [...prev, evt]));
           break;
         case "approval":
           setApproval(evt);
@@ -51,7 +55,14 @@ export default function CallPage() {
     };
     es.onerror = () => es.close();
     return () => es.close();
-  }, [callId]);
+  }, [callId, lang]);
+
+  useEffect(() => {
+    if (status === "ended" || status === "killed" || status === "failed") {
+      const tmr = setTimeout(() => router.push(`/${lang}/debrief/${callId}`), 1600);
+      return () => clearTimeout(tmr);
+    }
+  }, [status, lang, callId, router]);
 
   useEffect(() => {
     feedRef.current?.scrollTo({ top: feedRef.current.scrollHeight });
@@ -77,7 +88,9 @@ export default function CallPage() {
   return (
     <div className="flex flex-col gap-4 h-[80vh]">
       <div className="flex items-center justify-between">
-        <span className="rounded-full bg-foreground/10 px-3 py-1 text-sm">{statusLabel}</span>
+        <span className="rounded-full bg-foreground/10 px-3 py-1 text-sm">
+          {statusLabel} · {t("call_simulated")}
+        </span>
         <button onClick={() => setShowEnglish((v) => !v)} className="text-sm underline text-muted">
           {t("call_show_english")}
         </button>

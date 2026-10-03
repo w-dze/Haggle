@@ -23,9 +23,11 @@
   "case_walkaway_saved": "저장됨. 동의 없이는 이보다 높은 금액에 합의하지 않습니다.",
   "case_consent": "Haggle이 AI 어시스턴트로서 당신을 대신해 통신사에 전화합니다.",
   "case_start_call": "통화 시작",
+  "case_simulated_note": "데모: 자막이 있는 영어 통화 스크립트를 재생합니다. 실제 전화는 걸지 않습니다.",
   "case_not_found": "이 사례를 찾을 수 없습니다.",
   "case_competitors": "비교한 다른 요금제",
   "case_call_soon": "통신사 통화는 다음 단계입니다",
+  "call_simulated": "시뮬레이션",
   "call_dialing": "전화 거는 중...",
   "call_live": "통화 중",
   "call_ended": "종료됨",
@@ -37,5 +39,7 @@
   "approval_no": "아니오",
   "debrief_title": "결과 요약",
   "debrief_savings": "절약 금액",
+  "debrief_killed": "통화가 일찍 끝났습니다",
+  "debrief_next": "다음 단계",
   "debrief_view_audit": "감사 기록 보기"
 }

@@ -23,9 +23,11 @@
   "case_walkaway_saved": "Saved. We won't agree to more than this without asking you.",
   "case_consent": "Haggle will call the provider as an AI assistant on your behalf.",
   "case_start_call": "Start call",
+  "case_simulated_note": "Demo: this plays a scripted English call with live subtitles. No real phone call.",
   "case_not_found": "We couldn't find this case file.",
   "case_competitors": "Other plans we compared",
   "case_call_soon": "Calling the provider is coming next",
+  "call_simulated": "Simulated",
   "call_dialing": "Dialing...",
   "call_live": "Live",
   "call_ended": "Ended",
@@ -37,5 +39,7 @@
   "approval_no": "No",
   "debrief_title": "How it went",
   "debrief_savings": "You save",
+  "debrief_killed": "Call ended early",
+  "debrief_next": "Next steps",
   "debrief_view_audit": "View audit trail"
 }

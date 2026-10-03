@@ -2,6 +2,7 @@ import { getTranslator } from "@/lib/i18n";
 import { loadStoredCase } from "@/lib/case-files";
 import { formatMoney } from "@/lib/money";
 import { WalkawaySlider } from "../WalkawaySlider";
+import { StartCallButton } from "../StartCallButton";
 
 export default async function CasePage({
   params,
@@ -87,9 +88,13 @@ export default async function CasePage({
       />
 
       <p className="text-xs text-muted">{t("case_consent")}</p>
-      <button disabled className="btn-approve bg-accent/50 text-background cursor-not-allowed">
-        {t("case_call_soon")}
-      </button>
+      <p className="text-xs text-muted">{t("case_simulated_note")}</p>
+      <StartCallButton
+        caseId={id}
+        lang={lang}
+        label={t("case_start_call")}
+        errorLabel={t("intake_error")}
+      />
     </div>
   );
 }
