@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
-import { calls, transcriptLines, outcomes, caseFiles } from "@/lib/db/schema";
+import { calls, transcriptLines, outcomes, caseFiles, approvals } from "@/lib/db/schema";
 import { writeAudit } from "@/lib/audit";
 import { loadStoredCase } from "@/lib/case-files";
 import { dollarsToCents } from "@/lib/money";
@@ -164,8 +164,11 @@ export async function playSimulatedCall(callId: string, lang: string): Promise<v
     confirm,
   });
 
+  const offerTurns = turns.slice(0, -1);
+  const closing = turns[turns.length - 1];
+
   let seq = 0;
-  for (const turn of turns) {
+  for (const turn of offerTurns) {
     if (!(await stillActive(callId))) return;
     seq += 1;
     const tr = turn.tr[lang] ?? turn.tr.en;
@@ -183,6 +186,86 @@ export async function playSimulatedCall(callId: string, lang: string): Promise<v
     // Grok Voice clip finishes, so a long server delay would desync.
     await new Promise((r) => setTimeout(r, 400));
   }
+
+  if (!(await stillActive(callId))) return;
+
+  const approvalCopy: Record<string, string> = {
+    en: `${cf.provider} offers $${agreed}/month. Approve?`,
+    es: `${cf.provider} ofrece $${agreed} al mes. ¿Aprobar?`,
+    zh: `${cf.provider} 提供每月 $${agreed}。批准吗？`,
+    ko: `${cf.provider}가 월 $${agreed}를 제안합니다. 승인할까요?`,
+  };
+  const [approval] = await db
+    .insert(approvals)
+    .values({
+      callId,
+      summaryEn: approvalCopy.en,
+      summaryTranslated: approvalCopy[lang] ?? approvalCopy.en,
+      offer: { monthly: agreed },
+      status: "pending",
+    })
+    .returning({ id: approvals.id });
+  if (!approval) return;
+
+  let decision = "timeout";
+  for (let i = 0; i < 90; i++) {
+    if (!(await stillActive(callId))) return;
+    const [row] = await db
+      .select({ status: approvals.status })
+      .from(approvals)
+      .where(eq(approvals.id, approval.id))
+      .limit(1);
+    if (row?.status && row.status !== "pending") {
+      decision = row.status;
+      break;
+    }
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  if (decision === "timeout") {
+    await db.update(approvals).set({ status: "timeout" }).where(eq(approvals.id, approval.id));
+  }
+
+  if (!(await stillActive(callId))) return;
+
+  if (decision !== "yes") {
+    seq += 1;
+    const noEn = "The account holder can't accept that today. Thank you for your time.";
+    const noTr: Record<string, string> = {
+      en: noEn,
+      es: "La titular no puede aceptar eso hoy. Gracias por su tiempo.",
+      zh: "账户持有人今天无法接受这个价格。感谢您的时间。",
+      ko: "계정 소유자께서 오늘은 수락하기 어렵다고 하십니다. 시간 내주셔서 감사합니다.",
+    };
+    await db.insert(transcriptLines).values({
+      callId,
+      seq,
+      speaker: "agent",
+      textEn: noEn,
+      textTranslated: noTr[lang] ?? noEn,
+      lang,
+      numbersOk: true,
+      source: "script",
+    });
+    await db
+      .update(calls)
+      .set({ status: "ended", endedAt: new Date(), transcriptSource: "script" })
+      .where(eq(calls.id, callId));
+    await writeAudit({ actor: "negotiator", event: "call.ended", callId, payload: { result: "no_deal" } });
+    return;
+  }
+
+  seq += 1;
+  await db.insert(transcriptLines).values({
+    callId,
+    seq,
+    speaker: closing.speaker,
+    textEn: closing.en,
+    textTranslated: closing.tr[lang] ?? closing.tr.en,
+    lang,
+    numbersOk: true,
+    source: "script",
+  });
+  await new Promise((r) => setTimeout(r, 400));
 
   if (!(await stillActive(callId))) return;
 

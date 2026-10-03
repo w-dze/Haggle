@@ -10,6 +10,7 @@ export function WalkawaySlider({
   maxDollars,
   label,
   savedLabel,
+  persist = true,
 }: {
   caseId: string;
   lang: string;
@@ -17,12 +18,14 @@ export function WalkawaySlider({
   maxDollars: number;
   label: string;
   savedLabel: string;
+  persist?: boolean;
 }) {
   const [dollars, setDollars] = useState(Math.round(initialCents / 100));
   const [saved, setSaved] = useState(true);
 
-  async function persist(next: number) {
+  async function save(next: number) {
     setDollars(next);
+    if (!persist) return;
     setSaved(false);
     await fetch(`/api/case-files/${caseId}`, {
       method: "PATCH",
@@ -47,12 +50,12 @@ export function WalkawaySlider({
         className="w-full"
         onChange={(e) => {
           setDollars(Number(e.target.value));
-          setSaved(false);
+          if (persist) setSaved(false);
         }}
-        onPointerUp={(e) => persist(Number((e.target as HTMLInputElement).value))}
-        onKeyUp={(e) => persist(Number((e.target as HTMLInputElement).value))}
+        onPointerUp={(e) => save(Number((e.target as HTMLInputElement).value))}
+        onKeyUp={(e) => save(Number((e.target as HTMLInputElement).value))}
       />
-      <p className="text-xs text-muted">{saved ? savedLabel : "…"}</p>
+      {persist && <p className="text-xs text-muted">{saved ? savedLabel : "…"}</p>}
     </section>
   );
 }
