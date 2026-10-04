@@ -12,8 +12,11 @@ function parentHref(pathname: string): string | null {
   const [lang, section, id] = pathname.split("/").filter(Boolean);
   if (!lang || !section) return null;
   switch (section) {
+    case "dashboard":
+      // The dashboard is home; its merchant history pages go back to it.
+      return id ? `/${lang}/dashboard` : null;
     case "intake":
-      return `/${lang}`;
+      return `/${lang}/dashboard`;
     case "case":
       return `/${lang}/intake`;
     case "call":
@@ -30,7 +33,9 @@ function parentHref(pathname: string): string | null {
     case "debrief":
       return `/${lang}/history`;
     case "history":
-      return `/${lang}`;
+    case "receipts":
+    case "audit":
+      return `/${lang}/dashboard`;
     default:
       return `/${lang}`;
   }

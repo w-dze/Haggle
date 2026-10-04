@@ -66,5 +66,9 @@
   "debrief_view_audit": "감사 기록 보기",
   "back": "뒤로",
   "demo_banner": "데모 · 테스트 데이터",
-  "continue": "계속"
+  "continue": "계속",
+  "change_language": "언어 변경",
+  "dashboard_title": "청구서 점검",
+  "dashboard_placeholder": "정기 결제 내역과 이상해 보이는 요금이 여기에 표시됩니다.",
+  "dashboard_check_bill": "청구서 확인하기"
 }

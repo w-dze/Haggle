@@ -66,5 +66,9 @@
   "debrief_view_audit": "View audit trail",
   "back": "Back",
   "demo_banner": "Demo · mock data",
-  "continue": "Continue"
+  "continue": "Continue",
+  "change_language": "Change language",
+  "dashboard_title": "Your bill check-up",
+  "dashboard_placeholder": "Your recurring charges and anything that looks off will appear here.",
+  "dashboard_check_bill": "Check a bill"
 }

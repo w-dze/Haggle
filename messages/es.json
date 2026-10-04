@@ -66,5 +66,9 @@
   "debrief_view_audit": "Ver registro de auditoría",
   "back": "Atrás",
   "demo_banner": "Demo · datos de prueba",
-  "continue": "Continuar"
+  "continue": "Continuar",
+  "change_language": "Cambiar idioma",
+  "dashboard_title": "Revisión de tus facturas",
+  "dashboard_placeholder": "Aquí aparecerán tus cargos habituales y cualquier cosa que parezca rara.",
+  "dashboard_check_bill": "Revisar una factura"
 }

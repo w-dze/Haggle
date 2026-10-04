@@ -66,5 +66,9 @@
   "debrief_view_audit": "查看审计记录",
   "back": "返回",
   "demo_banner": "演示 · 模拟数据",
-  "continue": "继续"
+  "continue": "继续",
+  "change_language": "更改语言",
+  "dashboard_title": "账单检查",
+  "dashboard_placeholder": "您的固定扣款以及看起来不对劲的费用会显示在这里。",
+  "dashboard_check_bill": "检查一张账单"
 }

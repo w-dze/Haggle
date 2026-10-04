@@ -1,9 +1,9 @@
 import { Suspense } from "react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslator, isLocale } from "@/lib/i18n";
 import { PhoneFrame } from "@/components/ui/phone-frame";
 import { BackButton } from "./back-button";
+import { ChangeLanguage, HomeLink } from "./header-links";
 
 // App shell for every /[lang] screen. Fills its container (the full viewport on
 // phones, a phone-shaped frame on desktop) with the content scrolling inside
@@ -28,17 +28,19 @@ export default async function LangLayout({
           className="flex-none border-b border-line pt-[env(safe-area-inset-top,0px)]"
         >
           <div className="mx-auto flex h-14 w-full max-w-screen-sm items-center justify-between pr-1 pl-2">
-            <div className="w-11">
+            <div className="w-[64px]">
               <Suspense fallback={null}>
                 <BackButton label={t("back")} />
               </Suspense>
             </div>
-            <Link href={`/${lang}`} className="font-display text-[26px] leading-none">
-              {t("appName")}
-            </Link>
-            <span className="w-[52px] pr-3 text-right text-[11px] font-medium uppercase tracking-[0.14em] text-muted">
-              {lang}
-            </span>
+            <Suspense fallback={<span className="font-display text-[26px] leading-none">{t("appName")}</span>}>
+              <HomeLink lang={lang} label={t("appName")} />
+            </Suspense>
+            <div className="w-[64px]">
+              <Suspense fallback={null}>
+                <ChangeLanguage lang={lang} label={t("change_language")} />
+              </Suspense>
+            </div>
           </div>
         </header>
         {/* Demo honesty banner (§7.6). Keep this visible for judges. */}
