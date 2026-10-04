@@ -146,6 +146,14 @@ export default async function CasePage({
         label={t("case_start_call")}
         errorLabel={t("intake_error")}
       />
+      <StartCallButton
+        caseId={id}
+        lang={lang}
+        mode="live"
+        variant="secondary"
+        label={t("case_start_live")}
+        errorLabel={t("intake_error")}
+      />
     </div>
   );
 }

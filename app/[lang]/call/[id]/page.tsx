@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
+import { ConversationProvider } from "@elevenlabs/react";
 import { getTranslator } from "@/lib/i18n";
 import { mockHref } from "@/lib/mock-call";
 import { isTerminal, useCallStream } from "@/components/app/use-call-stream";
+import { useLiveAgent } from "@/components/app/use-live-agent";
 import { ApprovalCard } from "@/components/ui/approval-card";
 import { Button } from "@/components/ui/button";
 import { StatusPill } from "@/components/ui/status-pill";
@@ -12,6 +14,7 @@ import { TranscriptLine } from "@/components/ui/transcript-line";
 
 // Screen 4 — live call: subtitles, approval card, kill switch (§5.8, FR-19..FR-24).
 // Consumes /api/calls/:id/stream + Grok Voice, or the scripted demo with ?mock=1.
+// With ?live=1 the ElevenLabs agent negotiates in the browser against a human rep.
 
 const money = (n: number) => `$${Number.isInteger(n) ? n : n.toFixed(2)}`;
 
@@ -20,14 +23,26 @@ function clock(ms: number) {
   return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 }
 
-export default function CallPage() {
+export default function CallPageWithAgent() {
+  return (
+    <ConversationProvider>
+      <CallPage />
+    </ConversationProvider>
+  );
+}
+
+function CallPage() {
   const params = useParams<{ lang: string; id: string }>();
-  const mock = useSearchParams().get("mock") === "1";
+  const search = useSearchParams();
+  const mock = search.get("mock") === "1";
+  const live = !mock && search.get("live") === "1";
   const { lang, id: callId } = params;
   const t = getTranslator(lang);
   const tEn = getTranslator("en");
 
-  const call = useCallStream(callId, lang, mock);
+  const call = useCallStream(callId, lang, mock ? "mock" : live ? "live" : "simulated");
+  const agent = useLiveAgent(callId, lang, live);
+  const endCall = live ? agent.end : call.end;
   const [showEnglish, setShowEnglish] = useState(true);
   // English UI: the "translation" is the English itself, so show it once.
   const english = showEnglish && lang !== "en";
@@ -98,9 +113,9 @@ export default function CallPage() {
           </Button>
         </div>
       )}
-      {call.voiceReady && !call.needsGesture && (
+      {((call.voiceReady && !call.needsGesture) || (live && agent.connected)) && (
         <p className="flex-none px-4 pb-1 text-[11px] font-medium uppercase tracking-[0.14em] text-muted">
-          {t("call_voice")}
+          {live ? t("call_live_voice") : t("call_voice")}
         </p>
       )}
 
@@ -131,13 +146,27 @@ export default function CallPage() {
           </div>
           <div>
             <h1 className="text-4xl leading-[1.1]">{t("call_dialing")}…</h1>
-            <p className="mt-3 text-base leading-[1.4]">{t("call_waiting_hint")}</p>
+            <p className="mt-3 text-base leading-[1.4]">
+              {t(live ? "call_live_hint" : "call_waiting_hint")}
+            </p>
             {english && (
               <p lang="en" className="mt-1.5 text-[13px] leading-[1.35] text-muted">
-                {tEn("call_waiting_hint")}
+                {tEn(live ? "call_live_hint" : "call_waiting_hint")}
               </p>
             )}
           </div>
+          {live && !agent.connected && (
+            <div className="flex w-full flex-col gap-2">
+              <Button size="lg" className="w-full" onClick={agent.start} disabled={agent.connecting}>
+                {agent.connecting ? "…" : t("call_live_start")}
+              </Button>
+              {agent.error && (
+                <p className="text-sm text-danger">
+                  {t("call_live_error")} {agent.error}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       ) : (
         <div
@@ -225,7 +254,7 @@ export default function CallPage() {
               {t("call_see_results")}
             </Button>
           ) : (
-            <Button size="lg" variant="danger" className="w-full" onClick={call.end}>
+            <Button size="lg" variant="danger" className="w-full" onClick={endCall}>
               {t("call_end")}
             </Button>
           )}
