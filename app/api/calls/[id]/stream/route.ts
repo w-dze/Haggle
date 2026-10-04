@@ -62,6 +62,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
               type: "approval",
               id: a.id,
               summary: a.summaryTranslated ?? a.summaryEn ?? "",
+              summary_en: a.summaryEn ?? undefined,
               expires_at: new Date(a.requestedAt.getTime() + 45_000).toISOString(),
             });
           }

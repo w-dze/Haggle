@@ -46,11 +46,15 @@ export default async function CasePage({
           <p className="mt-3 text-sm leading-relaxed text-muted">{pick(MOCK_CASE.good, lang)}</p>
         </Card>
 
-        <section className="flex flex-col gap-2">
-          <label className="font-medium">{t("case_walkaway")}</label>
-          <p className="font-display text-3xl">${MOCK_CASE.walkaway}</p>
-          <input type="range" min={0} max={MOCK_CASE.current} defaultValue={MOCK_CASE.walkaway} className="w-full" />
-        </section>
+        <WalkawaySlider
+          caseId={id}
+          lang={lang}
+          initialCents={MOCK_CASE.walkaway * 100}
+          maxDollars={MOCK_CASE.current}
+          label={t("case_walkaway")}
+          savedLabel={t("case_walkaway_saved")}
+          persist={false}
+        />
 
         <p className="text-xs text-muted">{t("case_consent")}</p>
         <p className="text-xs text-muted">{t("case_simulated_note")}</p>

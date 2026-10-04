@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { StreamEvent } from "@/lib/bus";
-import { enqueueCallLine, stopCallPlayback, type PlayLine } from "@/lib/call-playback";
+import { enqueueCallLine, stopCallPlayback, waitForCallPlayback, type PlayLine } from "@/lib/call-playback";
 import { runMockCall, type MockCallControls } from "@/lib/mock-call";
 
 type Line = Extract<StreamEvent, { type: "line" }>;
@@ -104,6 +104,7 @@ export function useCallStream(callId: string, lang: string, mock: boolean) {
   const [needsGesture, setNeedsGesture] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
     const onLine = (evt: Line) => {
       enqueueCallLine(callId, evt as PlayLine, {
         onShow: (line) =>
@@ -117,6 +118,18 @@ export function useCallStream(callId: string, lang: string, mock: boolean) {
         onLine(evt);
         return;
       }
+      // Approve / outcome / ended must wait until the current line has been
+      // spoken, otherwise the card pops in over the last offer.
+      const wait =
+        evt.type === "approval" ||
+        evt.type === "outcome" ||
+        (evt.type === "status" && TERMINAL.has(evt.status) && evt.status !== "killed");
+      if (wait) {
+        void waitForCallPlayback(callId).then(() => {
+          if (!cancelled) dispatch({ kind: "event", evt, at: Date.now() });
+        });
+        return;
+      }
       dispatch({ kind: "event", evt, at: Date.now() });
     };
 
@@ -124,6 +137,7 @@ export function useCallStream(callId: string, lang: string, mock: boolean) {
       const controls = runMockCall(lang, onEvent);
       mockRef.current = controls;
       return () => {
+        cancelled = true;
         controls.stop();
         stopCallPlayback(callId);
       };
@@ -146,6 +160,7 @@ export function useCallStream(callId: string, lang: string, mock: boolean) {
       if (es.readyState !== EventSource.CLOSED) dispatch({ kind: "connection", ok: false });
     };
     return () => {
+      cancelled = true;
       es.close();
       stopCallPlayback(callId);
     };

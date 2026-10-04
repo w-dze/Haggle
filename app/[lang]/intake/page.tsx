@@ -19,6 +19,30 @@ type Demo = {
   monthly: number;
 };
 
+const FALLBACK_DEMOS: Demo[] = [
+  {
+    lang: "es",
+    name: "Maria Lopez",
+    customer_id: "af3d4ea0-d0c1-43fd-83ae-5f0b33e058af",
+    payee: "Comcastic Internet",
+    monthly: 89,
+  },
+  {
+    lang: "zh",
+    name: "Wei Chen",
+    customer_id: "e8988647-f81b-4575-996e-94bc08b6ffd6",
+    payee: "Comcastic Internet",
+    monthly: 89,
+  },
+  {
+    lang: "ko",
+    name: "Jiwoo Kim",
+    customer_id: "28b57f51-2dd4-4566-a89c-36c9bc98bfb5",
+    payee: "Comcastic Internet",
+    monthly: 89,
+  },
+];
+
 function apiMessage(json: ApiErr, lang: string, fallback: string): string {
   const i18n = json.error?.message_i18n;
   return i18n?.[lang] ?? i18n?.en ?? fallback;
@@ -43,23 +67,21 @@ export default function Intake() {
   const router = useRouter();
 
   const [file, setFile] = useState<File | null>(null);
-  const [demos, setDemos] = useState<Demo[]>([]);
+  const [demos, setDemos] = useState<Demo[]>(FALLBACK_DEMOS);
   const [demoId, setDemoId] = useState<string | null>(null);
   const [goal, setGoal] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (mock) return;
     fetch("/api/demo-accounts")
       .then((r) => r.json())
       .then((json: ApiOk<{ demos: Demo[] }> | ApiErr) => {
-        if (json.ok) setDemos(json.data.demos);
+        if (json.ok && json.data.demos.length) setDemos(json.data.demos);
+        else setDemos(FALLBACK_DEMOS);
       })
-      .catch(() => {
-        /* seed not run yet */
-      });
-  }, [mock]);
+      .catch(() => setDemos(FALLBACK_DEMOS));
+  }, []);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -126,7 +148,27 @@ export default function Intake() {
       <h1 className="text-3xl">{t("intake_title")}</h1>
 
       <Card as="section" className="flex flex-col gap-3">
-        <label className="font-medium" htmlFor="bill-photo">
+        <p className="font-medium">{t("intake_use_demo")}</p>
+        {(demos.length ? demos : FALLBACK_DEMOS).map((d) => (
+          <button
+            key={d.customer_id}
+            type="button"
+            disabled={busy}
+            onClick={() => {
+              setDemoId(d.customer_id);
+              setFile(null);
+              if (!goal.trim()) setGoal(t("intake_goal_placeholder"));
+            }}
+            className={`rounded-xl border px-3 py-3 text-left text-sm ${
+              demoId === d.customer_id
+                ? "border-accent bg-accent/10"
+                : "border-line hover:bg-foreground/5"
+            }`}
+          >
+            {d.name} · {d.payee} · ${d.monthly}/mo
+          </button>
+        ))}
+        <label className="mt-2 font-medium" htmlFor="bill-photo">
           {t("intake_upload")}
         </label>
         <DropZone
@@ -137,30 +179,6 @@ export default function Intake() {
             setDemoId(null);
           }}
         />
-
-        {demos.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <p className="text-sm text-muted">{t("intake_use_demo")}</p>
-            {demos.map((d) => (
-              <button
-                key={d.customer_id}
-                type="button"
-                disabled={busy}
-                onClick={() => {
-                  setDemoId(d.customer_id);
-                  setFile(null);
-                }}
-                className={`rounded-xl border px-3 py-3 text-left text-sm ${
-                  demoId === d.customer_id
-                    ? "border-accent bg-accent/10"
-                    : "border-line hover:bg-foreground/5"
-                }`}
-              >
-                {d.name} · {d.payee} · ${d.monthly}/mo
-              </button>
-            ))}
-          </div>
-        )}
       </Card>
 
       <section className="flex flex-col gap-2">
@@ -172,7 +190,7 @@ export default function Intake() {
           className="min-h-24 rounded-xl border border-line bg-surface p-3"
           placeholder={t("intake_goal_placeholder")}
           value={goal}
-          disabled={busy || mock}
+          disabled={busy}
           onChange={(e) => setGoal(e.target.value)}
         />
       </section>

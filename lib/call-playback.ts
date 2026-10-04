@@ -125,7 +125,7 @@ export function enqueueCallLine(callId: string, line: PlayLine, handlers: Handle
   queues.set(callId, next.catch(() => undefined));
 }
 
-export function waitForCallPlayback(callId: string, ms = 20_000): Promise<void> {
+export function waitForCallPlayback(callId: string, ms = 90_000): Promise<void> {
   return Promise.race([
     queues.get(callId) ?? Promise.resolve(),
     new Promise<void>((r) => setTimeout(r, ms)),
