@@ -68,7 +68,9 @@ function monthsBefore(asOf: string, count: number): string[] {
 }
 
 function summarize(series: MerchantSeries, findings: Finding[], asOf: string): MerchantSummary {
-  const recent = series.charges.slice(-6).map((c) => c.amountCents);
+  // Typical = the current level: the last 3 charges for steady bills, a longer
+  // window for bills that vary month to month (utilities, groceries).
+  const recent = series.charges.slice(series.variable ? -12 : -3).map((c) => c.amountCents);
   const last = series.all[series.all.length - 1];
   const months = monthsBefore(asOf, 12);
   const totals = new Map(months.map((m) => [m, 0]));

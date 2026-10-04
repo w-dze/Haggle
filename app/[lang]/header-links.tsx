@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { mockHref } from "@/lib/mock-call";
 
 // Header links that keep ?mock=1, so the /demo phone frame stays in mock mode.
@@ -15,30 +15,43 @@ export function HomeLink({ lang, label }: { lang: string; label: string }) {
   );
 }
 
-/** Reopens the language picker. Shows the current language code with a globe. */
-export function ChangeLanguage({ lang, label }: { lang: string; label: string }) {
+/** Current profile (avatar + first name + language). Tapping it reopens the picker. */
+export function ProfileChip({
+  lang,
+  name,
+  first,
+  initials,
+  tint,
+  label,
+}: {
+  lang: string;
+  name: string;
+  first: string;
+  initials: string;
+  tint: string;
+  label: string;
+}) {
   const mock = useSearchParams().get("mock") === "1";
+  // No profile is chosen yet while the picker itself is open.
+  if (usePathname() === `/${lang}`) return null;
   return (
     <Link
       href={mockHref(`/${lang}?pick=1`, mock)}
-      aria-label={label}
-      title={label}
-      className="flex h-11 items-center justify-end gap-1 pr-3 text-[11px] font-medium uppercase tracking-[0.14em] text-muted hover:text-foreground"
+      aria-label={`${name} · ${label}`}
+      title={`${name} · ${label}`}
+      className="flex h-11 max-w-full items-center justify-end gap-2 rounded-full pr-2 pl-1 hover:bg-foreground/5"
     >
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
+      <span
         aria-hidden="true"
+        className="flex size-8 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold tracking-wide text-[#262933]"
+        style={{ background: tint }}
       >
-        <circle cx="12" cy="12" r="9" />
-        <path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z" />
-      </svg>
-      {lang}
+        {initials}
+      </span>
+      <span className="flex min-w-0 flex-col items-start leading-tight">
+        <span className="max-w-[72px] truncate text-[13px] font-medium">{first}</span>
+        <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted">{lang}</span>
+      </span>
     </Link>
   );
 }

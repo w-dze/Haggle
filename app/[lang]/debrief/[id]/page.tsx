@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getTranslator } from "@/lib/i18n";
 import { debriefFromOutcome, loadCallOutcome } from "@/lib/outcomes";
 import { formatMoney } from "@/lib/money";
+import { loadStoredCase } from "@/lib/case-files";
 import { MOCK_OUTCOME, mockHref } from "@/lib/mock-call";
 import { Card } from "@/components/ui/card";
 import { StatCallout } from "@/components/ui/stat-callout";
@@ -34,6 +35,9 @@ export default async function DebriefPage({
         >
           {t("debrief_view_audit")}
         </Link>
+        <Link href={mockHref(`/${lang}/dashboard`, true)} className="text-sm text-muted underline">
+          {t("debrief_back_checkup")}
+        </Link>
       </div>
     );
   }
@@ -46,6 +50,9 @@ export default async function DebriefPage({
   }
 
   const debrief = packed?.outcome ? debriefFromOutcome(packed.outcome, lang) : null;
+  const fromCheckup = packed?.call.caseFileId
+    ? Boolean((await loadStoredCase(packed.call.caseFileId).catch(() => null))?.findingId)
+    : false;
   const killed = packed?.call.status === "killed";
   const savingsCents = packed?.outcome?.annualSavingsCents ?? 0;
 
@@ -87,6 +94,11 @@ export default async function DebriefPage({
       <Link href={`/${lang}/history`} className="text-sm text-muted underline">
         {t("debrief_view_audit")}
       </Link>
+      {fromCheckup && (
+        <Link href={`/${lang}/dashboard`} className="text-sm text-muted underline">
+          {t("debrief_back_checkup")}
+        </Link>
+      )}
     </div>
   );
 }

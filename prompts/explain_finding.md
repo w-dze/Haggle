@@ -25,5 +25,7 @@ Rules:
 - If `category` is `insurance`: only describe what the notice says and suggest
   neutral questions in `questions`. Do not judge the plan or coverage.
 - If `seasonal` is true, say it may be a normal seasonal change.
+- If `variable` is true, the bill changes every month: compare the latest charge with the usual
+  level (as the draft does). Do not describe it as one price change, and do not suggest promotions ended.
 - Keep provider names exactly as given. Keep each item to one or two short sentences.
 - Improve the wording of `draft`; keep its meaning, facts and number of items.

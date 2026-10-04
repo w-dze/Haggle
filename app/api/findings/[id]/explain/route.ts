@@ -4,6 +4,7 @@ import { demoBillEvents, findingById } from "@/lib/checkup/findings";
 import { explainFinding, seedFileCache } from "@/lib/llm";
 import { writeAudit } from "@/lib/audit";
 import { env } from "@/lib/env";
+import { currentUserId } from "@/lib/user";
 
 export const runtime = "nodejs";
 
@@ -30,6 +31,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
       actor: "user",
       event: "finding.explained",
       findingId: finding.id,
+      userId: (await currentUserId()) ?? undefined,
       payload: { lang: explanation.lang, source: explanation.source },
     }).catch((err) => console.warn(`[audit] finding.explained not written: ${err}`));
   }

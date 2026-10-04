@@ -345,9 +345,56 @@ const INSURANCE: Record<Lang, { causes: string[]; actions: string[]; questions: 
   },
 };
 
+// Bills that vary every month (utilities): describe the latest charge against
+// the usual level, not as a single price step, and offer seasonal causes.
+const VARIABLE: Record<Lang, (t: T) => Omit<ExplanationSections, "questions">> = {
+  en: ({ f, date }) => ({
+    what: [
+      `Your ${f.provider} charge was ${f.after} on ${date(f.latest_date)}, compared with a usual ${f.before} earlier in the year.`,
+      `Since ${date(f.change_date)} you have paid ${f.extra_paid} more than usual, over ${f.charges_since_change} charges.`,
+    ],
+    causes: [
+      "Energy use is often higher in very hot or very cold months.",
+      "Rates may be different at different times of year.",
+      "A meter reading or estimate may have been adjusted.",
+    ],
+    actions: ["Compare this bill with the same month last year.", `Ask ${f.provider} whether a budget or level-payment plan is available.`],
+  }),
+  es: ({ f, date }) => ({
+    what: [
+      `Tu cargo de ${f.provider} fue de ${f.after} el ${date(f.latest_date)}, frente a lo habitual de ${f.before} a principios de año.`,
+      `Desde el ${date(f.change_date)} has pagado ${f.extra_paid} más de lo habitual, en ${f.charges_since_change} cargos.`,
+    ],
+    causes: [
+      "El consumo de energía suele subir en los meses de mucho calor o mucho frío.",
+      "Las tarifas pueden cambiar según la época del año.",
+      "Puede que se haya ajustado una lectura o una estimación del medidor.",
+    ],
+    actions: ["Compara esta factura con la del mismo mes del año pasado.", `Pregunta a ${f.provider} si tiene un plan de pagos iguales cada mes.`],
+  }),
+  zh: ({ f, date }) => ({
+    what: [
+      `您在${date(f.latest_date)}的 ${f.provider} 费用是 ${f.after}，而年初通常是 ${f.before}。`,
+      `自${date(f.change_date)}以来，您在 ${f.charges_since_change} 笔扣款中比平时多付了 ${f.extra_paid}。`,
+    ],
+    causes: ["在很热或很冷的月份，用电量通常会更高。", "不同季节的电价可能不同。", "电表读数或估算可能被调整过。"],
+    actions: ["把这张账单和去年同月的账单比较一下。", `问问 ${f.provider} 是否有每月固定金额的缴费方案。`],
+  }),
+  ko: ({ f, date }) => ({
+    what: [
+      `${date(f.latest_date)}의 ${f.provider} 요금은 ${f.after}로, 연초의 평소 요금 ${f.before}와 비교됩니다.`,
+      `${date(f.change_date)} 이후 ${f.charges_since_change}번의 결제에서 평소보다 ${f.extra_paid}를 더 냈습니다.`,
+    ],
+    causes: ["아주 덥거나 추운 달에는 에너지 사용량이 늘어나는 경우가 많습니다.", "계절에 따라 요금이 다를 수 있습니다.", "계량기 검침이나 추정치가 조정되었을 수 있습니다."],
+    actions: ["작년 같은 달의 청구서와 비교해 보세요.", `${f.provider}에 매달 같은 금액을 내는 요금제가 있는지 물어보세요.`],
+  }),
+};
+
+const STEP_TYPES = new Set(["price_jump", "promo_expiry", "creeping", "outlier"]);
+
 export function templateExplanation(f: FindingFacts, lang: Lang): ExplanationSections {
   const date = (d: string) => formatDate(d, lang);
-  const base = TEXT[lang][f.type]({ f, date });
+  const base = f.variable && STEP_TYPES.has(f.type) && f.before ? VARIABLE[lang]({ f, date }) : TEXT[lang][f.type]({ f, date });
   const what = [...base.what];
   if (f.email_notice) what.push(NOTICE[lang](f, date));
   if (f.seasonal) what.push(SEASONAL[lang]);

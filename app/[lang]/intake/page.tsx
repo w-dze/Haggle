@@ -149,7 +149,10 @@ export default function Intake() {
 
       <Card as="section" className="flex flex-col gap-3">
         <p className="font-medium">{t("intake_use_demo")}</p>
-        {(demos.length ? demos : FALLBACK_DEMOS).map((d) => (
+        {/* The current profile's account first. */}
+        {[...(demos.length ? demos : FALLBACK_DEMOS)]
+          .sort((a, b) => Number(b.lang === lang) - Number(a.lang === lang))
+          .map((d) => (
           <button
             key={d.customer_id}
             type="button"

@@ -13,6 +13,8 @@ export type FindingFacts = {
   category: string;
   confidence: Finding["confidence"];
   seasonal: boolean;
+  /** The category varies month to month (utilities, groceries): describe it as a range, not a single step. */
+  variable: boolean;
   before: string | null; // "$55.00"
   after: string; // "$89.00"
   difference: string | null;
@@ -49,6 +51,7 @@ export function buildFacts(finding: Finding, billEvents: BillEventFact[] = []): 
     category: finding.category,
     confidence: finding.confidence,
     seasonal: finding.reasons.includes("seasonal_yoy"),
+    variable: finding.reasons.includes("variable_category"),
     before: before === null ? null : money(before),
     after: money(finding.afterCents),
     difference: diff === null ? null : money(diff),
