@@ -9,6 +9,7 @@ export function SiteHeader() {
       <div className="mx-auto grid h-14 w-full max-w-6xl grid-cols-[1fr_auto_1fr] items-center px-4 md:px-8">
         <nav aria-label="Main" className="flex items-center gap-6">
           <NavLink href="/demo">Demo</NavLink>
+          <NavLink href="/eval">Eval</NavLink>
         </nav>
         <Link href="/" className="font-display text-[26px] leading-none">
           Haggle

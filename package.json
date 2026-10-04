@@ -18,7 +18,8 @@
     "seed:fixture": "tsx scripts/seed-nessie.ts --fixture-only",
     "reset-demo": "tsx scripts/reset-demo.ts",
     "purge": "tsx scripts/purge.ts",
-    "eval": "tsx scripts/eval.ts"
+    "eval": "tsx scripts/eval.ts",
+    "eval:detector": "tsx scripts/eval-detector.ts"
   },
   "dependencies": {
     "@elevenlabs/react": "^1.16.0",

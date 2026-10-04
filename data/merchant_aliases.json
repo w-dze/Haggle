@@ -1,0 +1,14 @@
+{
+  "_note": "Maps cleaned statement text to a canonical merchant name. A rule matches when the cleaned text contains `match`. Order matters: first match wins.",
+  "aliases": [
+    { "match": "northwind", "name": "Northwind Internet" },
+    { "match": "streamflix", "name": "Streamflix" },
+    { "match": "brightly", "name": "Brightly Premium" },
+    { "match": "summit health", "name": "Summit Health Insurance" },
+    { "match": "cascade mobile", "name": "Cascade Mobile" },
+    { "match": "harbor wireless", "name": "Harbor Wireless" },
+    { "match": "oakwood", "name": "Oakwood Property Mgmt" },
+    { "match": "freshmart", "name": "FreshMart" },
+    { "match": "metro power", "name": "Metro Power & Light" }
+  ]
+}
