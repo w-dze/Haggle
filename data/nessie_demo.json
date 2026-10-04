@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-03",
+  "updated": "2026-10-04",
   "demos": [
     {
       "lang": "es",
@@ -31,5 +31,21 @@
       "payee": "Comcastic Internet",
       "monthly": 89
     }
-  ]
+  ],
+  "checkup": {
+    "customer_id": "29e0d94b-4987-470d-9a77-60b3eae1c97b",
+    "account_id": "96e8d362-2fd7-4ab3-99b1-6d10f4ab4695",
+    "merchants": {
+      "8c70205f-5c94-4f1b-95e9-e985685cd3ca": "m-northwind",
+      "c841239c-d1d3-4898-81fd-bacb9e7841be": "m-streamflix",
+      "16657b7d-1fec-414f-96c7-562a5e58f04b": "m-brightly",
+      "deafd362-b7d9-4fe4-93f9-ac66682911a5": "m-summit",
+      "cb260dbc-67e4-45ec-a24e-b72603aeadeb": "m-cascade",
+      "688519b0-9a63-4585-95ad-30c6bc7e3c9a": "m-harbor",
+      "25f703e8-6e01-4ae4-b5c2-b8030e48695f": "m-oakwood",
+      "a1021963-8643-4e88-ac21-f0a1766f9616": "m-freshmart",
+      "581f8931-3278-40e6-94fe-700136637080": "m-metro"
+    },
+    "seeded": "2026-10-04T04:25:20.077Z"
+  }
 }

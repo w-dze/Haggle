@@ -31,15 +31,47 @@ cp .env.example .env.local   # then fill in keys (see Appendix A of PDR.md)
 npm run dev                  # http://localhost:3000 -> redirects to /en
 ```
 
-Database (once DATABASE_URL is set):
+Database (once DATABASE_URL is set). Schema changes are committed migrations in `drizzle/`:
 
 ```bash
-npm run db:push              # push the Drizzle schema to Neon
-npm run seed                 # seed Nessie demo customers
+npm run db:migrate           # apply migrations (fresh database)
+npm run seed                 # seed Nessie (bill check-up persona) and load Neon
 ```
 
-Other scripts: `npm run db:generate`, `npm run db:migrate`, `npm run purge`,
-`npm run eval`, `npm run typecheck`.
+If your database was created earlier with `db:push`, run `npm run db:baseline`
+once before `db:migrate`. It records `0000_baseline` as already applied, so only
+the newer migrations run.
+
+### Bill check-up demo data
+
+- `npm run seed` creates "Maria" in Nessie with 12 months of purchases and bills
+  (24 months for the electric bill), then loads Neon. The es/zh/ko intake demo
+  personas in `data/nessie_demo.json` are kept; add `-- --personas` to recreate them.
+- The same deterministic generator (`lib/persona/generate.ts`) writes
+  `data/fixtures/maria.json`. If Nessie is unreachable or not seeded, the app
+  falls back to it automatically and logs `[data-source] using fixture: <reason>`.
+  Force a source with `DATA_SOURCE=nessie|fixture`.
+- Nessie stores purchase amounts as whole dollars. When a Nessie purchase matches
+  the fixture on date, merchant and dollars, the cents are restored from the
+  fixture, and the log says how many.
+- The demo inbox (`data/fixtures/inbox.json`) is read-only. Only extracted fields
+  (provider, amounts, dates, change type, message id) are stored in `bill_events`.
+  Senders outside `data/providers.json` are stored as untrusted with nothing extracted.
+
+Reset the demo to its seeded state:
+
+```bash
+npm run reset-demo           # clears findings, dismissals, LLM explanations and
+                             # finding-linked cases/calls; reloads bank + inbox data
+```
+
+The audit log is append-only and is never cleared. For a full snapshot reset,
+use a Neon branch: seed `main`, create a branch once with
+`neonctl branches create --name demo --parent main`, point `DATABASE_URL` at
+`demo`, and restore it any time with `neonctl branches reset demo --parent`.
+
+Other scripts: `npm run db:generate`, `npm run seed:fixture`, `npm test`,
+`npm run purge`, `npm run eval`, `npm run typecheck`.
 
 ## Project layout
 

@@ -4,6 +4,9 @@ import { z } from "zod";
 // should be required; for a scaffold that must boot `next dev` without keys,
 // everything is optional and validated lazily. Call `requireEnv()` in code
 // paths that genuinely need a key so failures are explicit and localized.
+// Empty strings (e.g. `DATA_SOURCE=` copied from .env.example) mean "unset".
+const blankToUndefined = (v: unknown) => (v === "" ? undefined : v);
+
 const EnvSchema = z.object({
   GEMINI_API_KEY: z.string().optional(),
   // flash-latest aliases to 3.8-flash, which 503s under load. Lite has its own quota.
@@ -27,6 +30,17 @@ const EnvSchema = z.object({
   TOOL_SHARED_SECRET: z.string().optional(),
 
   DATABASE_URL: z.string().optional(),
+
+  // Bill check-up. The LLM only phrases and translates; numbers come from code.
+  LLM_PROVIDER: z.preprocess(blankToUndefined, z.enum(["xai"]).default("xai")).catch("xai"),
+  XAI_MODEL: z.string().optional(), // confirmed against xAI docs in Phase 3
+  // auto = Nessie when seeded and reachable, else the local fixture.
+  DATA_SOURCE: z.preprocess(blankToUndefined, z.enum(["auto", "nessie", "fixture"]).default("auto")).catch("auto"),
+  // Shows the "Demo - mock data" strip and labels calls as simulated.
+  DEMO_MODE: z
+    .string()
+    .optional()
+    .transform((v) => v !== "false"),
 
   APP_BASE_URL: z.string().default("http://localhost:3000"),
   CALL_ALLOWLIST: z.string().default(""),
