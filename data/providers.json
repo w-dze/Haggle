@@ -1,0 +1,13 @@
+{
+  "_note": "Verified provider directory for the demo. All providers and phone numbers are fictional (555 numbers). Haggle only ever calls numbers from this list, never numbers found in emails.",
+  "updated": "2026-10-04",
+  "providers": [
+    { "id": "northwind", "name": "Northwind Internet", "category": "home_internet", "service": "Home internet", "phone": "+1-800-555-0142", "email_domains": ["northwind.example"], "verified": "Demo directory entry (fictional)" },
+    { "id": "streamflix", "name": "Streamflix", "category": "streaming", "service": "Streaming", "phone": "+1-866-555-0110", "email_domains": ["streamflix.example"], "verified": "Demo directory entry (fictional)" },
+    { "id": "brightly", "name": "Brightly Premium", "category": "subscription", "service": "App subscription", "phone": "+1-888-555-0177", "email_domains": ["brightly.example"], "verified": "Demo directory entry (fictional)" },
+    { "id": "summit", "name": "Summit Health Insurance", "category": "insurance", "service": "Health insurance", "phone": "+1-800-555-0163", "email_domains": ["summithealth.example"], "verified": "Demo directory entry (fictional)" },
+    { "id": "cascade", "name": "Cascade Mobile", "category": "mobile", "service": "Mobile phone", "phone": "+1-877-555-0125", "email_domains": ["cascademobile.example"], "verified": "Demo directory entry (fictional)" },
+    { "id": "harbor", "name": "Harbor Wireless", "category": "mobile", "service": "Mobile phone", "phone": "+1-877-555-0188", "email_domains": ["harborwireless.example"], "verified": "Demo directory entry (fictional)" },
+    { "id": "metro", "name": "Metro Power & Light", "category": "utility_electric", "service": "Electricity", "phone": "+1-800-555-0101", "email_domains": ["metropower.example"], "verified": "Demo directory entry (fictional)" }
+  ]
+}

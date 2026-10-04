@@ -12,6 +12,9 @@ export type StoredCase = {
   walkawayCents: number;
   currentCents: number;
   targetCents: number;
+  findingId: string | null;
+  /** Set when the case came from a bill check-up finding ("Call about this"). */
+  checkup: { finding_id: string; type: string; kind: "price" | "refund" | "cancel"; phone: string | null } | null;
 };
 
 export async function loadStoredCase(id: string): Promise<StoredCase | null> {
@@ -50,5 +53,7 @@ export async function loadStoredCase(id: string): Promise<StoredCase | null> {
     walkawayCents: row.walkawayCents ?? 0,
     currentCents: row.currentCents ?? 0,
     targetCents: row.targetCents ?? 0,
+    findingId: row.findingId ?? null,
+    checkup: row.findingId ? (((row.intent ?? {}) as { checkup?: StoredCase["checkup"] }).checkup ?? null) : null,
   };
 }

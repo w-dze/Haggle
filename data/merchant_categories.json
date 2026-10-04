@@ -1,0 +1,15 @@
+{
+  "_note": "Category per canonical merchant name, and which categories vary legitimately month to month (their findings get lower confidence).",
+  "merchants": {
+    "Northwind Internet": "home_internet",
+    "Streamflix": "streaming",
+    "Brightly Premium": "subscription",
+    "Summit Health Insurance": "insurance",
+    "Cascade Mobile": "mobile",
+    "Harbor Wireless": "mobile",
+    "Oakwood Property Mgmt": "rent",
+    "FreshMart": "groceries",
+    "Metro Power & Light": "utility_electric"
+  },
+  "variable_categories": ["utility_electric", "utility_gas", "utility_water", "groceries", "dining", "fuel", "shopping"]
+}

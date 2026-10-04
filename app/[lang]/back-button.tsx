@@ -8,14 +8,17 @@ import { mockHref } from "@/lib/mock-call";
 // iframe the session history is shared with the parent page, so going "back"
 // could navigate the parent away. Real calls store the case id separately
 // because the call UUID is not the case-file id.
-function parentHref(pathname: string): string | null {
+function parentHref(pathname: string, fromCheckup: boolean): string | null {
   const [lang, section, id] = pathname.split("/").filter(Boolean);
   if (!lang || !section) return null;
   switch (section) {
+    case "dashboard":
+      // The dashboard is home; its merchant history pages go back to it.
+      return id ? `/${lang}/dashboard` : null;
     case "intake":
-      return `/${lang}`;
+      return `/${lang}/dashboard`;
     case "case":
-      return `/${lang}/intake`;
+      return fromCheckup ? `/${lang}/dashboard` : `/${lang}/intake`;
     case "call":
       if (id) {
         try {
@@ -30,7 +33,9 @@ function parentHref(pathname: string): string | null {
     case "debrief":
       return `/${lang}/history`;
     case "history":
-      return `/${lang}`;
+    case "receipts":
+    case "audit":
+      return `/${lang}/dashboard`;
     default:
       return `/${lang}`;
   }
@@ -38,8 +43,9 @@ function parentHref(pathname: string): string | null {
 
 export function BackButton({ label }: { label: string }) {
   const pathname = usePathname();
-  const mock = useSearchParams().get("mock") === "1";
-  const href = parentHref(pathname);
+  const search = useSearchParams();
+  const mock = search.get("mock") === "1";
+  const href = parentHref(pathname, search.get("from") === "checkup");
   if (!href) return null;
 
   return (

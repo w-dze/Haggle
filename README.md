@@ -28,18 +28,78 @@ Full design: see [PDR.md](PDR.md).
 ```bash
 npm install
 cp .env.example .env.local   # then fill in keys (see Appendix A of PDR.md)
-npm run dev                  # http://localhost:3000 -> redirects to /en
+npm run dev                  # http://localhost:3000 (site); the app is at /demo or /en
 ```
 
-Database (once DATABASE_URL is set):
+Database (once DATABASE_URL is set). Schema changes are committed migrations in `drizzle/`:
 
 ```bash
-npm run db:push              # push the Drizzle schema to Neon
-npm run seed                 # seed Nessie demo customers
+npm run db:migrate           # apply migrations (fresh database)
+npm run seed                 # seed Nessie (bill check-up persona) and load Neon
 ```
 
-Other scripts: `npm run db:generate`, `npm run db:migrate`, `npm run purge`,
-`npm run eval`, `npm run typecheck`.
+If your database was created earlier with `db:push`, run `npm run db:baseline`
+once before `db:migrate`. It records `0000_baseline` as already applied, so only
+the newer migrations run.
+
+### Bill check-up demo data
+
+- `npm run seed` creates "Maria" in Nessie with 12 months of purchases and bills
+  (24 months for the electric bill), then loads Neon. The es/zh/ko intake demo
+  personas in `data/nessie_demo.json` are kept; add `-- --personas` to recreate them.
+- The same deterministic generator (`lib/persona/generate.ts`) writes
+  `data/fixtures/maria.json`. If Nessie is unreachable or not seeded, the app
+  falls back to it automatically and logs `[data-source] using fixture: <reason>`.
+  Force a source with `DATA_SOURCE=nessie|fixture`.
+- Nessie stores purchase amounts as whole dollars. When a Nessie purchase matches
+  the fixture on date, merchant and dollars, the cents are restored from the
+  fixture, and the log says how many.
+- The demo inbox (`data/fixtures/inbox.json`) is read-only. Only extracted fields
+  (provider, amounts, dates, change type, message id) are stored in `bill_events`.
+  Senders outside `data/providers.json` are stored as untrusted with nothing extracted.
+
+Reset the demo to its seeded state:
+
+```bash
+npm run reset-demo           # clears findings, dismissals, LLM explanations and
+                             # finding-linked cases/calls; reloads bank + inbox data
+```
+
+The audit log is append-only and is never cleared. For a full snapshot reset,
+use a Neon branch: seed `main`, create a branch once with
+`neonctl branches create --name demo --parent main`, point `DATABASE_URL` at
+`demo`, and restore it any time with `neonctl branches reset demo --parent`.
+
+### Bill check-up dashboard
+
+After choosing a language once, users land on `/[lang]/dashboard`. It shows what
+looks off in their recurring charges, plus their typical charges with a 12-month chart.
+
+- **Detection is deterministic** (`lib/detect/`, unit-tested). It covers price jumps,
+  duplicates, creeping fees, new subscriptions, promo endings, outliers and
+  bill/payment mismatches, each with a confidence level. Seasonal and variable bills
+  are downgraded. `npm run eval:detector` (or `/eval`, linked under the demo phone)
+  scores it on labeled synthetic data.
+- **Explanations** come from `lib/llm.ts`, which is provider-agnostic. `LLM_PROVIDER=xai`
+  uses Grok with the key read from server env. The model only rewords and translates a
+  draft built from the finding's numbers. Every number is checked against the finding;
+  if one doesn't match, a template is shown instead. Order: Neon cache, then
+  `data/explanations.seed.json`, then the LLM, then the template. The UI labels
+  saved and template explanations.
+- **`npm run pregen`** pre-generates explanations for every seeded finding in
+  en/es/zh/ko, so the demo works when the API is down. Run it again after
+  changing the seed or the templates.
+- **"This is normal"** stores a dismissal. The amount becomes the merchant's
+  baseline, and Undo is available. **"Call about this"** creates a pre-filled case
+  (target = previous typical price) and hands off to the existing case → call → debrief flow.
+- **Receipts and the audit log** are at `/[lang]/receipts` and `/[lang]/audit`.
+- **Demo mode** (`?mock=1`, used by the /demo phone) uses only the fixture and the
+  pre-generated explanations. It needs no database and no API, and saves nothing.
+- **Translations:** the strings and templates added for this feature are listed in
+  `messages/review-status.json` until a native speaker has reviewed them.
+
+Other scripts: `npm run db:generate`, `npm run seed:fixture`, `npm test`,
+`npm run pregen`, `npm run purge`, `npm run eval`, `npm run typecheck`.
 
 ## Project layout
 

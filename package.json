@@ -9,12 +9,18 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "test": "tsx --test \"lib/**/*.test.ts\"",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:baseline": "tsx scripts/db-baseline.ts",
     "db:push": "drizzle-kit push --force",
     "seed": "tsx scripts/seed-nessie.ts",
+    "seed:fixture": "tsx scripts/seed-nessie.ts --fixture-only",
+    "reset-demo": "tsx scripts/reset-demo.ts",
+    "pregen": "tsx scripts/pregen-explanations.ts",
     "purge": "tsx scripts/purge.ts",
-    "eval": "tsx scripts/eval.ts"
+    "eval": "tsx scripts/eval.ts",
+    "eval:detector": "tsx scripts/eval-detector.ts"
   },
   "dependencies": {
     "@elevenlabs/react": "^1.16.0",

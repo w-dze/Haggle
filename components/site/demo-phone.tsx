@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { DeviceFrame } from "@/components/ui/phone-frame";
 
 // The app in an iframe inside a phone frame. ?mock=1 runs the scripted
@@ -29,6 +30,12 @@ export function DemoPhone() {
         >
           Restart demo
         </button>
+        <Link
+          href="/eval"
+          className="flex h-11 items-center whitespace-nowrap rounded-full border border-line px-4 hover:bg-foreground/5 hover:text-foreground"
+        >
+          Detector results
+        </Link>
       </div>
     </div>
   );

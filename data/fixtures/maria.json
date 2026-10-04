@@ -1,0 +1,1791 @@
+{
+  "persona": {
+    "key": "maria",
+    "first": "Maria",
+    "last": "Lopez",
+    "lang": "es"
+  },
+  "asOf": "2026-10-01",
+  "merchants": [
+    {
+      "_id": "m-northwind",
+      "name": "Northwind Internet",
+      "category": "home_internet"
+    },
+    {
+      "_id": "m-streamflix",
+      "name": "Streamflix",
+      "category": "streaming"
+    },
+    {
+      "_id": "m-brightly",
+      "name": "Brightly Premium",
+      "category": "subscription"
+    },
+    {
+      "_id": "m-summit",
+      "name": "Summit Health Insurance",
+      "category": "insurance"
+    },
+    {
+      "_id": "m-cascade",
+      "name": "Cascade Mobile",
+      "category": "mobile"
+    },
+    {
+      "_id": "m-harbor",
+      "name": "Harbor Wireless",
+      "category": "mobile"
+    },
+    {
+      "_id": "m-oakwood",
+      "name": "Oakwood Property Mgmt",
+      "category": "rent"
+    },
+    {
+      "_id": "m-freshmart",
+      "name": "FreshMart",
+      "category": "groceries"
+    },
+    {
+      "_id": "m-metro",
+      "name": "Metro Power & Light",
+      "category": "utility_electric"
+    }
+  ],
+  "purchases": [
+    {
+      "_id": "p-0078",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 70.56,
+      "purchase_date": "2024-10-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0079",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 69.27,
+      "purchase_date": "2024-11-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0080",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 68.51,
+      "purchase_date": "2024-12-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0081",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 75.95,
+      "purchase_date": "2025-01-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0082",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 71.21,
+      "purchase_date": "2025-02-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0083",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 68.47,
+      "purchase_date": "2025-03-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0084",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 75.81,
+      "purchase_date": "2025-04-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0085",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 70.07,
+      "purchase_date": "2025-05-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0086",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 96.2,
+      "purchase_date": "2025-06-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0087",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 126.2,
+      "purchase_date": "2025-07-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0088",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 127.07,
+      "purchase_date": "2025-08-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0089",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 103.21,
+      "purchase_date": "2025-09-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0001",
+      "merchant_id": "m-oakwood",
+      "description": "OAKWOOD PROPERTY MGMT RENT",
+      "amount": 1450,
+      "purchase_date": "2025-10-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0102",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 59.48,
+      "purchase_date": "2025-10-02",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0003",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2025-10-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0005",
+      "merchant_id": "m-cascade",
+      "description": "CASCADE MOBILE BILL PMT",
+      "amount": 40,
+      "purchase_date": "2025-10-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0103",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 107.22,
+      "purchase_date": "2025-10-11",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0002",
+      "merchant_id": "m-northwind",
+      "description": "NORTHWIND INTERNET*AUTOPAY",
+      "amount": 55,
+      "purchase_date": "2025-10-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0090",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 68.17,
+      "purchase_date": "2025-10-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0004",
+      "merchant_id": "m-summit",
+      "description": "SUMMIT HEALTH INS PREMIUM",
+      "amount": 120,
+      "purchase_date": "2025-10-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0104",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 80.36,
+      "purchase_date": "2025-10-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0006",
+      "merchant_id": "m-harbor",
+      "description": "HARBOR WIRELESS",
+      "amount": 65,
+      "purchase_date": "2025-10-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0105",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 75.52,
+      "purchase_date": "2025-10-25",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0106",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 91.19,
+      "purchase_date": "2025-10-30",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0007",
+      "merchant_id": "m-oakwood",
+      "description": "OAKWOOD PROPERTY MGMT RENT",
+      "amount": 1450,
+      "purchase_date": "2025-11-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0009",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2025-11-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0107",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 94.16,
+      "purchase_date": "2025-11-07",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0011",
+      "merchant_id": "m-cascade",
+      "description": "CASCADE MOBILE BILL PMT",
+      "amount": 40,
+      "purchase_date": "2025-11-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0008",
+      "merchant_id": "m-northwind",
+      "description": "NORTHWIND INTERNET*AUTOPAY",
+      "amount": 55,
+      "purchase_date": "2025-11-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0108",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 87.01,
+      "purchase_date": "2025-11-14",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0091",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 68.83,
+      "purchase_date": "2025-11-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0010",
+      "merchant_id": "m-summit",
+      "description": "SUMMIT HEALTH INS PREMIUM",
+      "amount": 120,
+      "purchase_date": "2025-11-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0109",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 69.21,
+      "purchase_date": "2025-11-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0012",
+      "merchant_id": "m-harbor",
+      "description": "HARBOR WIRELESS",
+      "amount": 65,
+      "purchase_date": "2025-11-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0110",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 104.78,
+      "purchase_date": "2025-11-28",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0013",
+      "merchant_id": "m-oakwood",
+      "description": "OAKWOOD PROPERTY MGMT RENT",
+      "amount": 1450,
+      "purchase_date": "2025-12-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0015",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2025-12-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0111",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 75.42,
+      "purchase_date": "2025-12-06",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0017",
+      "merchant_id": "m-cascade",
+      "description": "CASCADE MOBILE BILL PMT",
+      "amount": 40,
+      "purchase_date": "2025-12-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0014",
+      "merchant_id": "m-northwind",
+      "description": "NORTHWIND INTERNET*AUTOPAY",
+      "amount": 55,
+      "purchase_date": "2025-12-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0092",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 72.17,
+      "purchase_date": "2025-12-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0112",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 100.88,
+      "purchase_date": "2025-12-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0016",
+      "merchant_id": "m-summit",
+      "description": "SUMMIT HEALTH INS PREMIUM",
+      "amount": 120,
+      "purchase_date": "2025-12-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0018",
+      "merchant_id": "m-harbor",
+      "description": "HARBOR WIRELESS",
+      "amount": 65,
+      "purchase_date": "2025-12-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0113",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 87.72,
+      "purchase_date": "2025-12-24",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0114",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 56.81,
+      "purchase_date": "2025-12-29",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0019",
+      "merchant_id": "m-oakwood",
+      "description": "OAKWOOD PROPERTY MGMT RENT",
+      "amount": 1450,
+      "purchase_date": "2026-01-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0021",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2026-01-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0115",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 71.51,
+      "purchase_date": "2026-01-07",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0023",
+      "merchant_id": "m-cascade",
+      "description": "CASCADE MOBILE BILL PMT",
+      "amount": 40,
+      "purchase_date": "2026-01-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0020",
+      "merchant_id": "m-northwind",
+      "description": "NORTHWIND INTERNET*AUTOPAY",
+      "amount": 55,
+      "purchase_date": "2026-01-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0093",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 70.46,
+      "purchase_date": "2026-01-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0116",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 100.57,
+      "purchase_date": "2026-01-16",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0022",
+      "merchant_id": "m-summit",
+      "description": "SUMMIT HEALTH INS PREMIUM",
+      "amount": 120,
+      "purchase_date": "2026-01-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0117",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 75.39,
+      "purchase_date": "2026-01-21",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0024",
+      "merchant_id": "m-harbor",
+      "description": "HARBOR WIRELESS",
+      "amount": 65,
+      "purchase_date": "2026-01-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0118",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 105.13,
+      "purchase_date": "2026-01-26",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0025",
+      "merchant_id": "m-oakwood",
+      "description": "OAKWOOD PROPERTY MGMT RENT",
+      "amount": 1450,
+      "purchase_date": "2026-02-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0027",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2026-02-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0119",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 88.31,
+      "purchase_date": "2026-02-04",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0029",
+      "merchant_id": "m-cascade",
+      "description": "CASCADE MOBILE BILL PMT",
+      "amount": 40,
+      "purchase_date": "2026-02-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0026",
+      "merchant_id": "m-northwind",
+      "description": "NORTHWIND INTERNET*AUTOPAY",
+      "amount": 55,
+      "purchase_date": "2026-02-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0120",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 87.74,
+      "purchase_date": "2026-02-13",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0094",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 68.12,
+      "purchase_date": "2026-02-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0028",
+      "merchant_id": "m-summit",
+      "description": "SUMMIT HEALTH INS PREMIUM",
+      "amount": 120,
+      "purchase_date": "2026-02-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0121",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 96.61,
+      "purchase_date": "2026-02-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0030",
+      "merchant_id": "m-harbor",
+      "description": "HARBOR WIRELESS",
+      "amount": 65,
+      "purchase_date": "2026-02-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0122",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 65.9,
+      "purchase_date": "2026-02-25",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0031",
+      "merchant_id": "m-oakwood",
+      "description": "OAKWOOD PROPERTY MGMT RENT",
+      "amount": 1450,
+      "purchase_date": "2026-03-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0033",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2026-03-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0123",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 109.42,
+      "purchase_date": "2026-03-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0035",
+      "merchant_id": "m-cascade",
+      "description": "CASCADE MOBILE BILL PMT",
+      "amount": 40,
+      "purchase_date": "2026-03-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0124",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 89.55,
+      "purchase_date": "2026-03-09",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0032",
+      "merchant_id": "m-northwind",
+      "description": "NORTHWIND INTERNET*AUTOPAY",
+      "amount": 55,
+      "purchase_date": "2026-03-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0125",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 92.23,
+      "purchase_date": "2026-03-14",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0095",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 68.79,
+      "purchase_date": "2026-03-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0034",
+      "merchant_id": "m-summit",
+      "description": "SUMMIT HEALTH INS PREMIUM",
+      "amount": 120,
+      "purchase_date": "2026-03-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0036",
+      "merchant_id": "m-harbor",
+      "description": "HARBOR WIRELESS",
+      "amount": 65,
+      "purchase_date": "2026-03-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0126",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 56.47,
+      "purchase_date": "2026-03-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0127",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 70.18,
+      "purchase_date": "2026-03-27",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0037",
+      "merchant_id": "m-oakwood",
+      "description": "OAKWOOD PROPERTY MGMT RENT",
+      "amount": 1450,
+      "purchase_date": "2026-04-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0039",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2026-04-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0128",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 110.83,
+      "purchase_date": "2026-04-05",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0041",
+      "merchant_id": "m-cascade",
+      "description": "CASCADE MOBILE BILL PMT",
+      "amount": 40,
+      "purchase_date": "2026-04-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0129",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 60.44,
+      "purchase_date": "2026-04-10",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0038",
+      "merchant_id": "m-northwind",
+      "description": "NORTHWIND INTERNET*AUTOPAY",
+      "amount": 89,
+      "purchase_date": "2026-04-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0096",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 73.52,
+      "purchase_date": "2026-04-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0130",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 108.86,
+      "purchase_date": "2026-04-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0040",
+      "merchant_id": "m-summit",
+      "description": "SUMMIT HEALTH INS PREMIUM",
+      "amount": 120,
+      "purchase_date": "2026-04-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0042",
+      "merchant_id": "m-harbor",
+      "description": "HARBOR WIRELESS",
+      "amount": 65,
+      "purchase_date": "2026-04-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0131",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 73.92,
+      "purchase_date": "2026-04-24",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0043",
+      "merchant_id": "m-oakwood",
+      "description": "OAKWOOD PROPERTY MGMT RENT",
+      "amount": 1450,
+      "purchase_date": "2026-05-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0045",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2026-05-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0132",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 94.19,
+      "purchase_date": "2026-05-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0047",
+      "merchant_id": "m-cascade",
+      "description": "CASCADE MOBILE BILL PMT",
+      "amount": 40,
+      "purchase_date": "2026-05-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0133",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 79.93,
+      "purchase_date": "2026-05-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0044",
+      "merchant_id": "m-northwind",
+      "description": "NORTHWIND INTERNET*AUTOPAY",
+      "amount": 89,
+      "purchase_date": "2026-05-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0097",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 73.45,
+      "purchase_date": "2026-05-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0134",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 93.02,
+      "purchase_date": "2026-05-16",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0046",
+      "merchant_id": "m-summit",
+      "description": "SUMMIT HEALTH INS PREMIUM",
+      "amount": 120,
+      "purchase_date": "2026-05-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0048",
+      "merchant_id": "m-harbor",
+      "description": "HARBOR WIRELESS",
+      "amount": 65,
+      "purchase_date": "2026-05-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0135",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 63.11,
+      "purchase_date": "2026-05-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0136",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 67.51,
+      "purchase_date": "2026-05-28",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0049",
+      "merchant_id": "m-oakwood",
+      "description": "OAKWOOD PROPERTY MGMT RENT",
+      "amount": 1450,
+      "purchase_date": "2026-06-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0137",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 87.86,
+      "purchase_date": "2026-06-02",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0051",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2026-06-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0053",
+      "merchant_id": "m-cascade",
+      "description": "CASCADE MOBILE BILL PMT",
+      "amount": 40,
+      "purchase_date": "2026-06-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0138",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 59.17,
+      "purchase_date": "2026-06-11",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0050",
+      "merchant_id": "m-northwind",
+      "description": "NORTHWIND INTERNET*AUTOPAY",
+      "amount": 89,
+      "purchase_date": "2026-06-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0098",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 95.47,
+      "purchase_date": "2026-06-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0074",
+      "merchant_id": "m-brightly",
+      "description": "BRIGHTLY* PREMIUM",
+      "amount": 9.99,
+      "purchase_date": "2026-06-17",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0139",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 94.17,
+      "purchase_date": "2026-06-18",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0052",
+      "merchant_id": "m-summit",
+      "description": "SUMMIT HEALTH INS PREMIUM",
+      "amount": 120,
+      "purchase_date": "2026-06-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0054",
+      "merchant_id": "m-harbor",
+      "description": "HARBOR WIRELESS",
+      "amount": 65,
+      "purchase_date": "2026-06-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0140",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 67.77,
+      "purchase_date": "2026-06-26",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0055",
+      "merchant_id": "m-oakwood",
+      "description": "OAKWOOD PROPERTY MGMT RENT",
+      "amount": 1450,
+      "purchase_date": "2026-07-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0141",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 112.83,
+      "purchase_date": "2026-07-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0057",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2026-07-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0142",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 65.48,
+      "purchase_date": "2026-07-06",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0059",
+      "merchant_id": "m-cascade",
+      "description": "CASCADE MOBILE BILL PMT",
+      "amount": 41,
+      "purchase_date": "2026-07-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0056",
+      "merchant_id": "m-northwind",
+      "description": "NORTHWIND INTERNET*AUTOPAY",
+      "amount": 89,
+      "purchase_date": "2026-07-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0143",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 59.21,
+      "purchase_date": "2026-07-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0099",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 125.97,
+      "purchase_date": "2026-07-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0075",
+      "merchant_id": "m-brightly",
+      "description": "BRIGHTLY* PREMIUM",
+      "amount": 9.99,
+      "purchase_date": "2026-07-17",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0058",
+      "merchant_id": "m-summit",
+      "description": "SUMMIT HEALTH INS PREMIUM",
+      "amount": 138,
+      "purchase_date": "2026-07-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0144",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 88.49,
+      "purchase_date": "2026-07-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0060",
+      "merchant_id": "m-harbor",
+      "description": "HARBOR WIRELESS",
+      "amount": 65,
+      "purchase_date": "2026-07-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0145",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 106.75,
+      "purchase_date": "2026-07-27",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0061",
+      "merchant_id": "m-oakwood",
+      "description": "OAKWOOD PROPERTY MGMT RENT",
+      "amount": 1450,
+      "purchase_date": "2026-08-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0063",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2026-08-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0146",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 80.71,
+      "purchase_date": "2026-08-05",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0065",
+      "merchant_id": "m-cascade",
+      "description": "CASCADE MOBILE BILL PMT",
+      "amount": 42,
+      "purchase_date": "2026-08-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0062",
+      "merchant_id": "m-northwind",
+      "description": "NORTHWIND INTERNET*AUTOPAY",
+      "amount": 89,
+      "purchase_date": "2026-08-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0147",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 62.41,
+      "purchase_date": "2026-08-14",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0100",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 132.42,
+      "purchase_date": "2026-08-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0076",
+      "merchant_id": "m-brightly",
+      "description": "BRIGHTLY* PREMIUM",
+      "amount": 9.99,
+      "purchase_date": "2026-08-17",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0064",
+      "merchant_id": "m-summit",
+      "description": "SUMMIT HEALTH INS PREMIUM",
+      "amount": 138,
+      "purchase_date": "2026-08-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0148",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 88.89,
+      "purchase_date": "2026-08-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0066",
+      "merchant_id": "m-harbor",
+      "description": "HARBOR WIRELESS",
+      "amount": 65,
+      "purchase_date": "2026-08-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0149",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 57.77,
+      "purchase_date": "2026-08-27",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0067",
+      "merchant_id": "m-oakwood",
+      "description": "OAKWOOD PROPERTY MGMT RENT",
+      "amount": 1450,
+      "purchase_date": "2026-09-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0150",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 70.35,
+      "purchase_date": "2026-09-01",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0069",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2026-09-03",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0073",
+      "merchant_id": "m-streamflix",
+      "description": "STREAMFLIX.COM 866-555-0110",
+      "amount": 15.49,
+      "purchase_date": "2026-09-05",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0151",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 67.16,
+      "purchase_date": "2026-09-07",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0071",
+      "merchant_id": "m-cascade",
+      "description": "CASCADE MOBILE BILL PMT",
+      "amount": 43,
+      "purchase_date": "2026-09-08",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0068",
+      "merchant_id": "m-northwind",
+      "description": "NORTHWIND INTERNET*AUTOPAY",
+      "amount": 89,
+      "purchase_date": "2026-09-12",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0152",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART 0567",
+      "amount": 110.66,
+      "purchase_date": "2026-09-14",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0101",
+      "merchant_id": "m-metro",
+      "description": "METRO POWER & LIGHT",
+      "amount": 106.18,
+      "purchase_date": "2026-09-15",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0077",
+      "merchant_id": "m-brightly",
+      "description": "BRIGHTLY* PREMIUM",
+      "amount": 9.99,
+      "purchase_date": "2026-09-17",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0070",
+      "merchant_id": "m-summit",
+      "description": "SUMMIT HEALTH INS PREMIUM",
+      "amount": 138,
+      "purchase_date": "2026-09-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0153",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 112.23,
+      "purchase_date": "2026-09-20",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0072",
+      "merchant_id": "m-harbor",
+      "description": "HARBOR WIRELESS",
+      "amount": 65,
+      "purchase_date": "2026-09-22",
+      "status": "completed",
+      "medium": "balance"
+    },
+    {
+      "_id": "p-0154",
+      "merchant_id": "m-freshmart",
+      "description": "FRESHMART #1234",
+      "amount": 75.29,
+      "purchase_date": "2026-09-27",
+      "status": "completed",
+      "medium": "balance"
+    }
+  ],
+  "bills": [
+    {
+      "_id": "b-0001",
+      "payee": "Oakwood Property Mgmt",
+      "nickname": "Rent",
+      "payment_amount": 1450,
+      "payment_date": "2025-10-01",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0002",
+      "payee": "Northwind Internet",
+      "nickname": "Home internet",
+      "payment_amount": 55,
+      "payment_date": "2025-10-12",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0003",
+      "payee": "Harbor Wireless",
+      "nickname": "Phone",
+      "payment_amount": 65,
+      "payment_date": "2025-10-22",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0004",
+      "payee": "Oakwood Property Mgmt",
+      "nickname": "Rent",
+      "payment_amount": 1450,
+      "payment_date": "2025-11-01",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0005",
+      "payee": "Northwind Internet",
+      "nickname": "Home internet",
+      "payment_amount": 55,
+      "payment_date": "2025-11-12",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0006",
+      "payee": "Harbor Wireless",
+      "nickname": "Phone",
+      "payment_amount": 65,
+      "payment_date": "2025-11-22",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0007",
+      "payee": "Oakwood Property Mgmt",
+      "nickname": "Rent",
+      "payment_amount": 1450,
+      "payment_date": "2025-12-01",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0008",
+      "payee": "Northwind Internet",
+      "nickname": "Home internet",
+      "payment_amount": 55,
+      "payment_date": "2025-12-12",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0009",
+      "payee": "Harbor Wireless",
+      "nickname": "Phone",
+      "payment_amount": 65,
+      "payment_date": "2025-12-22",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0010",
+      "payee": "Oakwood Property Mgmt",
+      "nickname": "Rent",
+      "payment_amount": 1450,
+      "payment_date": "2026-01-01",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0011",
+      "payee": "Northwind Internet",
+      "nickname": "Home internet",
+      "payment_amount": 55,
+      "payment_date": "2026-01-12",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0012",
+      "payee": "Harbor Wireless",
+      "nickname": "Phone",
+      "payment_amount": 65,
+      "payment_date": "2026-01-22",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0013",
+      "payee": "Oakwood Property Mgmt",
+      "nickname": "Rent",
+      "payment_amount": 1450,
+      "payment_date": "2026-02-01",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0014",
+      "payee": "Northwind Internet",
+      "nickname": "Home internet",
+      "payment_amount": 55,
+      "payment_date": "2026-02-12",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0015",
+      "payee": "Harbor Wireless",
+      "nickname": "Phone",
+      "payment_amount": 65,
+      "payment_date": "2026-02-22",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0016",
+      "payee": "Oakwood Property Mgmt",
+      "nickname": "Rent",
+      "payment_amount": 1450,
+      "payment_date": "2026-03-01",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0017",
+      "payee": "Northwind Internet",
+      "nickname": "Home internet",
+      "payment_amount": 55,
+      "payment_date": "2026-03-12",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0018",
+      "payee": "Harbor Wireless",
+      "nickname": "Phone",
+      "payment_amount": 65,
+      "payment_date": "2026-03-22",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0019",
+      "payee": "Oakwood Property Mgmt",
+      "nickname": "Rent",
+      "payment_amount": 1450,
+      "payment_date": "2026-04-01",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0020",
+      "payee": "Northwind Internet",
+      "nickname": "Home internet",
+      "payment_amount": 89,
+      "payment_date": "2026-04-12",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0021",
+      "payee": "Harbor Wireless",
+      "nickname": "Phone",
+      "payment_amount": 65,
+      "payment_date": "2026-04-22",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0022",
+      "payee": "Oakwood Property Mgmt",
+      "nickname": "Rent",
+      "payment_amount": 1450,
+      "payment_date": "2026-05-01",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0023",
+      "payee": "Northwind Internet",
+      "nickname": "Home internet",
+      "payment_amount": 89,
+      "payment_date": "2026-05-12",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0024",
+      "payee": "Harbor Wireless",
+      "nickname": "Phone",
+      "payment_amount": 65,
+      "payment_date": "2026-05-22",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0025",
+      "payee": "Oakwood Property Mgmt",
+      "nickname": "Rent",
+      "payment_amount": 1450,
+      "payment_date": "2026-06-01",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0026",
+      "payee": "Northwind Internet",
+      "nickname": "Home internet",
+      "payment_amount": 89,
+      "payment_date": "2026-06-12",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0027",
+      "payee": "Harbor Wireless",
+      "nickname": "Phone",
+      "payment_amount": 65,
+      "payment_date": "2026-06-22",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0028",
+      "payee": "Oakwood Property Mgmt",
+      "nickname": "Rent",
+      "payment_amount": 1450,
+      "payment_date": "2026-07-01",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0029",
+      "payee": "Northwind Internet",
+      "nickname": "Home internet",
+      "payment_amount": 89,
+      "payment_date": "2026-07-12",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0030",
+      "payee": "Harbor Wireless",
+      "nickname": "Phone",
+      "payment_amount": 65,
+      "payment_date": "2026-07-22",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0031",
+      "payee": "Oakwood Property Mgmt",
+      "nickname": "Rent",
+      "payment_amount": 1450,
+      "payment_date": "2026-08-01",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0032",
+      "payee": "Northwind Internet",
+      "nickname": "Home internet",
+      "payment_amount": 89,
+      "payment_date": "2026-08-12",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0033",
+      "payee": "Harbor Wireless",
+      "nickname": "Phone",
+      "payment_amount": 65,
+      "payment_date": "2026-08-22",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0034",
+      "payee": "Oakwood Property Mgmt",
+      "nickname": "Rent",
+      "payment_amount": 1450,
+      "payment_date": "2026-09-01",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0035",
+      "payee": "Northwind Internet",
+      "nickname": "Home internet",
+      "payment_amount": 89,
+      "payment_date": "2026-09-12",
+      "status": "completed"
+    },
+    {
+      "_id": "b-0036",
+      "payee": "Harbor Wireless",
+      "nickname": "Phone",
+      "payment_amount": 65,
+      "payment_date": "2026-09-22",
+      "status": "completed"
+    }
+  ],
+  "labels": [
+    {
+      "kind": "anomaly",
+      "type": "price_jump",
+      "merchant": "Northwind Internet",
+      "date": "2026-04-12",
+      "note": "$55 → $89"
+    },
+    {
+      "kind": "anomaly",
+      "type": "duplicate",
+      "merchant": "Streamflix",
+      "date": "2026-09-05",
+      "note": "second $15.49 within 3 days"
+    },
+    {
+      "kind": "anomaly",
+      "type": "new_recurring",
+      "merchant": "Brightly Premium",
+      "date": "2026-06-17",
+      "note": "$9.99/mo after trial, no email"
+    },
+    {
+      "kind": "anomaly",
+      "type": "price_jump",
+      "merchant": "Summit Health Insurance",
+      "date": "2026-07-20",
+      "note": "$120 → $138"
+    },
+    {
+      "kind": "anomaly",
+      "type": "creeping",
+      "merchant": "Cascade Mobile",
+      "date": "2026-09-08",
+      "note": "$40 → $41 → $42 → $43"
+    },
+    {
+      "kind": "not_high",
+      "merchant": "Metro Power & Light",
+      "note": "summer rise every year (seasonal)"
+    },
+    {
+      "kind": "not_high",
+      "merchant": "FreshMart",
+      "note": "normal grocery variation"
+    },
+    {
+      "kind": "not_high",
+      "merchant": "Oakwood Property Mgmt",
+      "note": "flat rent"
+    },
+    {
+      "kind": "not_high",
+      "merchant": "Harbor Wireless",
+      "note": "flat phone bill"
+    }
+  ]
+}
