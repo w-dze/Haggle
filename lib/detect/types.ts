@@ -95,6 +95,8 @@ export type Finding = {
   /** When the change first appeared. */
   changeDate: string;
   latestDate: string;
+  /** Dates of every evidence charge, oldest first (e.g. both sides of a duplicate). */
+  dates: string[];
   chargesSinceChange: number;
   extraPaidCents: number;
   evidence: { chargeIds: string[]; billIds: string[]; emailIds: string[] };

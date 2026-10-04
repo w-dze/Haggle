@@ -13,6 +13,8 @@ export type AuditInput = {
   event: string; // e.g. "call.started"
   callId?: string;
   caseFileId?: string;
+  userId?: string;
+  findingId?: string;
   payload?: unknown;
 };
 
@@ -33,9 +35,15 @@ export async function writeAudit(input: AuditInput): Promise<void> {
     caseFileId: input.caseFileId ?? null,
     payload: input.payload ?? null,
   };
+  // Bill check-up links are optional columns; keep them out of the hashed row
+  // when unset so existing hashes are computed exactly as before.
+  const links = {
+    ...(input.userId ? { userId: input.userId } : {}),
+    ...(input.findingId ? { findingId: input.findingId } : {}),
+  };
   const hash = createHash("sha256")
-    .update(prevHash + JSON.stringify(row))
+    .update(prevHash + JSON.stringify({ ...row, ...links }))
     .digest("hex");
 
-  await db.insert(auditEvents).values({ ...row, hash, prevHash });
+  await db.insert(auditEvents).values({ ...row, ...links, hash, prevHash });
 }

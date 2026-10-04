@@ -33,7 +33,7 @@ const EnvSchema = z.object({
 
   // Bill check-up. The LLM only phrases and translates; numbers come from code.
   LLM_PROVIDER: z.preprocess(blankToUndefined, z.enum(["xai"]).default("xai")).catch("xai"),
-  XAI_MODEL: z.string().optional(), // confirmed against xAI docs in Phase 3
+  XAI_MODEL: z.string().optional(), // default grok-4.20-non-reasoning (lib/llm/providers/xai.ts)
   // auto = Nessie when seeded and reachable, else the local fixture.
   DATA_SOURCE: z.preprocess(blankToUndefined, z.enum(["auto", "nessie", "fixture"]).default("auto")).catch("auto"),
   // Shows the "Demo - mock data" strip and labels calls as simulated.

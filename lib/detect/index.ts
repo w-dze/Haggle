@@ -113,6 +113,7 @@ export function detect(input: DetectInput): DetectResult {
     seriesByMerchant,
   };
 
+  const dateById = new Map(charges.map((c) => [c.id, c.date]));
   const candidates = [...series.flatMap((s) => RULES.flatMap((rule) => rule(s, ctx))), ...billMismatch(ctx)];
 
   const findings: Finding[] = mergeCandidates(candidates)
@@ -126,6 +127,7 @@ export function detect(input: DetectInput): DetectResult {
         confidence,
         reasons,
         supportingRules: supporting,
+        dates: [...new Set(rest.evidence.chargeIds.map((id) => dateById.get(id)!).filter(Boolean))].sort(),
         evidence: { ...rest.evidence, emailIds: [...new Set([...rest.evidence.emailIds, ...emailIds])] },
       };
     })

@@ -13,7 +13,7 @@ export type RuleContext = {
 };
 
 /** A rule's output before confidence, ids and merging are applied. */
-export type Candidate = Omit<Finding, "id" | "confidence" | "reasons" | "supportingRules"> & {
+export type Candidate = Omit<Finding, "id" | "confidence" | "reasons" | "supportingRules" | "dates"> & {
   base: Confidence;
   /** Stable parts of the id (dates, not source ids, so Nessie and fixture agree). */
   idParts: string[];
