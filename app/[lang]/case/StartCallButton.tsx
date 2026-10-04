@@ -9,11 +9,15 @@ export function StartCallButton({
   lang,
   label,
   errorLabel,
+  mode = "simulated",
+  variant,
 }: {
   caseId: string;
   lang: string;
   label: string;
   errorLabel: string;
+  mode?: "simulated" | "live";
+  variant?: "secondary";
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -26,7 +30,7 @@ export function StartCallButton({
       const res = await fetch("/api/calls", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ case_file_id: caseId, lang }),
+        body: JSON.stringify({ case_file_id: caseId, lang, mode }),
       });
       const json = (await res.json()) as {
         ok: boolean;
@@ -41,7 +45,7 @@ export function StartCallButton({
       } catch {
         /* ignore */
       }
-      router.push(`/${lang}/call/${json.data.call_id}`);
+      router.push(`/${lang}/call/${json.data.call_id}${mode === "live" ? "?live=1" : ""}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : errorLabel);
       setBusy(false);
@@ -50,7 +54,7 @@ export function StartCallButton({
 
   return (
     <div className="flex flex-col gap-2">
-      <Button type="button" size="lg" onClick={start} disabled={busy}>
+      <Button type="button" size="lg" variant={variant} onClick={start} disabled={busy}>
         {busy ? "…" : label}
       </Button>
       {error && <p className="text-sm text-danger">{error}</p>}

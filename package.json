@@ -17,6 +17,7 @@
     "eval": "tsx scripts/eval.ts"
   },
   "dependencies": {
+    "@elevenlabs/react": "^1.16.0",
     "@google/genai": "^1.0.0",
     "@neondatabase/serverless": "^0.10.4",
     "drizzle-orm": "^0.38.3",

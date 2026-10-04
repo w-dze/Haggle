@@ -9,16 +9,19 @@ import { eq } from "drizzle-orm";
 
 export const runtime = "nodejs";
 
-// POST /api/calls — start a simulated negotiation (Twilio is blocked).
+// POST /api/calls — start a negotiation (Twilio is blocked). "simulated" plays
+// a script; "live" runs the ElevenLabs agent in the browser with a human rep.
 const Body = z.object({
   case_file_id: z.string().uuid(),
   lang: z.string(),
+  mode: z.enum(["simulated", "live"]).default("simulated"),
 });
 
 export async function POST(req: NextRequest) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return failMsg("bad_request", parsed.error.message, 400);
 
+  const { mode } = parsed.data;
   try {
     const stored = await loadStoredCase(parsed.data.case_file_id);
     if (!stored) return failMsg("not_found", "Case file not found", 404);
@@ -28,9 +31,9 @@ export async function POST(req: NextRequest) {
       .insert(calls)
       .values({
         caseFileId: stored.id,
-        toNumber: "simulated",
+        toNumber: mode === "live" ? "browser" : "simulated",
         status: "dialing",
-        transcriptSource: "queued",
+        transcriptSource: mode === "live" ? "realtime" : "queued",
       })
       .returning({ id: calls.id });
 
@@ -40,10 +43,10 @@ export async function POST(req: NextRequest) {
       event: "call.requested",
       callId: row.id,
       caseFileId: stored.id,
-      payload: { mode: "simulated", lang: parsed.data.lang },
+      payload: { mode, lang: parsed.data.lang },
     });
 
-    return ok({ call_id: row.id, case_file_id: stored.id, mode: "simulated" });
+    return ok({ call_id: row.id, case_file_id: stored.id, mode });
   } catch (err) {
     return failMsg("call_failed", String(err), 500);
   }

@@ -92,12 +92,17 @@ function reducer(state: State, action: Action): State {
   }
 }
 
+export type CallMode = "mock" | "simulated" | "live";
+
 /**
  * Live call state, fed either by the real SSE stream or, with `mock`, by the
  * scripted demo call. Both paths go through the same reducer. Subtitles appear
  * when Grok Voice starts the line (or immediately if TTS is unavailable).
+ * In `live` mode the ElevenLabs agent is the voice, so lines show as they land.
  */
-export function useCallStream(callId: string, lang: string, mock: boolean) {
+export function useCallStream(callId: string, lang: string, mode: CallMode) {
+  const mock = mode === "mock";
+  const live = mode === "live";
   const [state, dispatch] = useReducer(reducer, initialState);
   const mockRef = useRef<MockCallControls | null>(null);
   const [voiceReady, setVoiceReady] = useState(false);
@@ -114,6 +119,10 @@ export function useCallStream(callId: string, lang: string, mock: boolean) {
       });
     };
     const onEvent = (evt: StreamEvent) => {
+      if (live) {
+        dispatch({ kind: "event", evt, at: Date.now() });
+        return;
+      }
       if (evt.type === "line") {
         onLine(evt);
         return;
@@ -143,9 +152,11 @@ export function useCallStream(callId: string, lang: string, mock: boolean) {
       };
     }
 
-    fetch(`/api/calls/${callId}/simulate?lang=${lang}`, { method: "POST" }).catch(() => {
-      /* playback is best-effort; SSE still shows persisted lines */
-    });
+    if (!live) {
+      fetch(`/api/calls/${callId}/simulate?lang=${lang}`, { method: "POST" }).catch(() => {
+        /* playback is best-effort; SSE still shows persisted lines */
+      });
+    }
 
     const es = new EventSource(`/api/calls/${callId}/stream`);
     es.onopen = () => dispatch({ kind: "connection", ok: true });
@@ -164,7 +175,7 @@ export function useCallStream(callId: string, lang: string, mock: boolean) {
       es.close();
       stopCallPlayback(callId);
     };
-  }, [callId, lang, mock]);
+  }, [callId, lang, mock, live]);
 
   // The countdown is the user's deadline. If it runs out unanswered, close the
   // card locally (the server treats no answer as "no").
@@ -201,8 +212,9 @@ export function useCallStream(callId: string, lang: string, mock: boolean) {
   const end = useCallback(async () => {
     stopCallPlayback(callId);
     if (mock) mockRef.current?.end();
+    else if (live) await fetch(`/api/calls/${callId}/live/finish?lang=${lang}`, { method: "POST" });
     else await fetch(`/api/calls/${callId}/end`, { method: "POST" });
-  }, [mock, callId]);
+  }, [mock, live, callId, lang]);
 
   const unmute = useCallback(() => setNeedsGesture(false), []);
 
